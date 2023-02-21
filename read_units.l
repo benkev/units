@@ -14,12 +14,13 @@
 
 %}
 
-%x Definition (Substitution) Section
+/* Definition (Substitution) Section */
 
 D		[0-9]
 INT		[+-]?{D}+
 NUM		{INT}
-ANGLE	[ \t]*("\""|"''"|"'"|"deg"|"rad")
+PLAINANGLE	[ \t]*("\""|"''"|"'"|"deg"|"rad")
+SOLIDANGLE	[ \t]*"sr"
 FREQ	[ \t]*("mHz"|"Hz"|"kHz"|"MHz"|"GHz")
 DUR		[ \t]*("us"|"usec"|"ms"|"msec"|"s"|"sec"|"min"|"hr")
 
