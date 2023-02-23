@@ -9,6 +9,9 @@
 %token OP CP
 %token EOL
 
+%left ADD SUB
+%left MUL DIV ABS
+
  /* %glr-parser */
 
 %%
