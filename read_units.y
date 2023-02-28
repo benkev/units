@@ -1,38 +1,43 @@
-/* Parse an expression of measurement units */
+/* 
+ * Parse an expression of measurement units
+*/
 
 %{
-#include <stdio.h>
+
 %}
 
-/* declare tokens */
-%token MEASURE
-%token ADD SUB MUL DIV ABS
-%token EOL
+/* Declare tokens */
+%token NUM MEASURE
+
+/* Declare precedence and associativity */
+/* Operators are declared in increasing order of precedence */
+%left '+' '-'
+%left '*' '/'
+%left NEG     /* negation - unary minus */
+%left POS     /* unary plus             */
+%right '^'    /* exponentiation         */
+
+/* Grammar */
 %%
-calclist: /* nothing */
- matches at beginning of input
- | calclist exp EOL { printf("= %d\n", $1); } /* EOL is end of an expression */
-;
-exp: factor
- default $$ = $1
-| exp ADD factor { $$ = $1 + $3; }
-| exp SUB factor { $$ = $1 - $3; }
-;
-factor: term
- default $$ = $1
-| factor MUL term { $$ = $1 * $3; }
-| factor DIV term { $$ = $1 / $3; }
-;
-term: MEASURE default $$ = $1
-| ABS term
- { $$ = $2 >= 0? $2 : - $2; }
+
+exp:    MEASURE              { $$ = $1;         }
+        | NUM                { $$ = $1;         }
+        | NUM '+' NUM        { $$ = $1 + $3;    }
+        | NUM '-' NUM        { $$ = $1 - $3;    }
+        | '-' NUM  %prec NEG { $$ = -$2;        }
+        | '+' NUM  %prec POS { $$ = $2;        }
+        | exp '*' exp        { $$ = $1 * $3;    }
+        | exp '/' exp        { $$ = $1 / $3;    }
+        | exp '^' exp        { $$ = pow ($1, $3); }
+        | '(' exp ')'        { $$ = $2;         }
 ;
 %%
-main(int argc, char **argv)
-{
-yyparse();
+
+
+main(int argc, char **argv) {
+    yyparse();
 }
-yyerror(char *s)
-{
-fprintf(stderr, "error: %s\n", s);
+
+yyerror(char *s) {
+    fprintf(stderr, "error: %s\n", s);
 }
