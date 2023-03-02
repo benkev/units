@@ -4,10 +4,24 @@
 
 %{
 
+/* int yylex(yyscan_t scanner); */
+
 %}
 
-/* Declare tokens */
-%token NUM MEASURE
+/*
+ * Parse stack element
+ */
+%union {
+  char  *s;
+  int    d;
+}
+
+/* Declare tokens (terminal symbols) */
+%token <d> NUM
+%token <s> MEASURE
+
+ /* Declare type for the expression (nonterminal symbol) */
+%type <s> exp
 
 /* Declare precedence and associativity */
 /* Operators are declared in increasing order of precedence */
