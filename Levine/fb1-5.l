@@ -1,4 +1,6 @@
 /* recognize tokens for the calculator and print them out */
+%option noyywrap
+
 %{
 # include "fb1-5.tab.h"
 %}
