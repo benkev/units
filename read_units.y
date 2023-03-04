@@ -27,7 +27,7 @@ int yylex(void);
 %token <s> MEASURE
 
 /* Declare type for the expression (nonterminal symbol) */
-%type <s> exp
+/* %type <s> exp */
 %type <d> numex
 
 /* Declare precedence and associativity */
@@ -62,8 +62,10 @@ numex:  NUM                      { $$ = $1;         }
 
 
 int main(int argc, char **argv) {
-    printf("> ");
+
     yyparse();
+    
+    return 0;
 }
 
 void yyerror(char const *s) {
