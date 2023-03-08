@@ -1,6 +1,9 @@
 /* simplest version of calculator */
 %{
 #  include <stdio.h>
+
+int  yylex(void);
+ void yyerror(char *s);
 %}
 
 /* declare tokens */
@@ -37,13 +40,14 @@ term: NUMBER
  | OP exp CP { $$ = $2; }
  ;
 %%
-main()
+
+int main()
 {
   printf("> "); 
   yyparse();
 }
 
-yyerror(char *s)
+void yyerror(char *s)
 {
   fprintf(stderr, "error: %s\n", s);
 }

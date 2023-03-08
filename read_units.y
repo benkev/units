@@ -25,10 +25,12 @@ int yylex(void);
 /* Declare tokens (terminal symbols) */
 %token <d> NUM
 %token <s> MEASURE
+%token <d> EOL
 
 /* Declare type for the expression (nonterminal symbol) */
 /* %type <s> exp */
 %type <d> numex
+%type <d> explist
 
 /* Declare precedence and associativity */
 /* Operators are declared in increasing order of precedence */
@@ -47,6 +49,10 @@ int yylex(void);
 /*         | exp '^' numex      {  } */
 /*         | '(' exp ')'        {          } */
 /* ; */
+
+explist:   /* empty */
+        | explist numex EOL   { printf("= %d\n> ", $2); }
+        | explist EOL         { printf("> "); } /* blank line or a comment */
 
 numex:  NUM                      { $$ = $1;         }
         | numex '+' numex        { $$ = $1 + $3;    }

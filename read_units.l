@@ -34,6 +34,8 @@ MASS    [ \t]*("pg"|"ng"|"ug"|"mg"|"cg"|"dg"|"g"|"dag"|"hg"|"kg"|"Mg"|"Gg")
 ")"         { return yytext[0]; }
 [0-9]+	    { yylval.d = atoi(yytext); return NUM; }
 [a-zA-z]+   { yylval.s = strdup(yytext); return MEASURE; }
+
+\n      { return EOL; }
 [ \t]   { /* ignore white space */ }
 .	{ printf("Mystery character %c\n", *yytext); }
 

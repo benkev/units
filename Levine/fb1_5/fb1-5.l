@@ -18,5 +18,5 @@
 \n      { return EOL; }
 "//".*  
 [ \t]   { /* ignore white space */ }
-.	{ yyerror("Mystery character %c\n", *yytext); }
+.	{ printf("Mystery character %c\n", *yytext); }
 %%
