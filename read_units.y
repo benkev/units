@@ -12,6 +12,32 @@ int yylex(void);
  
 /* int yylex(yyscan_t scanner); */
 
+/*
+ * The positions of the measurement unit powers in dim[] and 
+ * multiples or subdivisions in mul[]  are as follows:
+ *
+ * 0: length (meter,    m)
+ * 1: mass	 (kilogram, kg)
+ * 2: time   (second,	s)
+ * 3: electric current	(Ampere, A)
+ * 4: thermodynamic temperature	(Kelvin, K)
+ * 5: amount of substance (mole, mol)
+ * 6: luminous intensity (candela, cd)
+ * 7: plane angle (radian, rad)
+ * 8: plane angle (degree, deg)
+ * 9: solid angle (steradian, sr)
+ * 
+ * Array dim stores integer powers of the units in the measure expression.
+ * Array mul stores integer powers of the prefix multipliers of units 
+ * in the measure expression.
+ *
+ *
+ */
+ 
+int dim[32];  /* powers of the units */
+int mul[32];  /* powers of the prefix multipliers, like milli, kilo etc. */
+
+
 %}
 
 /*
@@ -43,12 +69,12 @@ int yylex(void);
 /* Grammar */
 %%
 
-/* exp:    MEASURE              {          } */
-/*         | exp '*' exp        {     } */
-/*         | exp '/' exp        {     } */
-/*         | exp '^' numex      {  } */
-/*         | '(' exp ')'        {          } */
-/* ; */
+symex:    MEASURE              {          }
+        | symex '*' symex        {     }
+        | symex '/' symex        {     }
+        | symex '^' numex      {  }
+        | '(' symex ')'        {          }
+;
 
 explist:   /* empty */
         | explist numex EOL   { printf("= %d\n> ", $2); }
@@ -68,7 +94,7 @@ numex:  NUM                      { $$ = $1;         }
 
 
 int main(int argc, char **argv) {
-
+    
     yyparse();
     
     return 0;

@@ -3,7 +3,7 @@
 #  include <stdio.h>
 
 int  yylex(void);
- void yyerror(char *s);
+void yyerror(char *s);
 %}
 
 /* declare tokens */
