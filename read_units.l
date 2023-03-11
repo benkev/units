@@ -13,15 +13,20 @@ D		[0-9]
 INT		[+-]?{D}+
 NUM		{INT}
 
-SI_PREFIX    [ \t]*("q"|"r"|"y"|"z"|"a"|"f"|"p"|"n"|"u"|"m"|"c"|"d"|"da"|"h"|"k"|"M"|"G"|"T"|"P"|"E"|"Z"|"Y"|"R"|"Q"|"quecto"|"ronto"|"yocto"|"zepto"|"atto"|"femto"|"pico"|"nano"|"micro"|"milli"|"centi"|"deci"|"deka"|"hecto"|"kilo"|"Mega"|"Giga"|"Tera"|"Peta"|"Exa"|"Zetta"|"Yotta"|"Ronna"|"Quetta")
-    
-PLAINANGLE	[ \t]*("\""|"''"|"'"|"deg"|"rad")
-SOLIDANGLE	[ \t]*"sr"
-FREQ	[ \t]*("mHz"|"Hz"|"kHz"|"MHz"|"GHz")
-DUR		[ \t]*("us"|"usec"|"ms"|"msec"|"s"|"sec"|"min"|"hr")
-LENGTH  [ \t]*("pm"|"nm"|"um"|"mm"|"cm"|"dm"|"m"|"dam"|"hm"|"km"|"Mm"|"Gm")
-MASS    [ \t]*("pg"|"ng"|"ug"|"mg"|"cg"|"dg"|"g"|"dag"|"hg"|"kg"|"Mg"|"Gg")
+/* SI_PREFIX    [ \t]*("q"|"r"|"y"|"z"|"a"|"f"|"p"|"n"|"u"|"m"|"c"|"d"|"da"|"h"|"k"|"M"|"G"|"T"|"P"|"E"|"Z"|"Y"|"R"|"Q"|"quecto"|"ronto"|"yocto"|"zepto"|"atto"|"femto"|"pico"|"nano"|"micro"|"milli"|"centi"|"deci"|"deka"|"hecto"|"kilo"|"Mega"|"Giga"|"Tera"|"Peta"|"Exa"|"Zetta"|"Yotta"|"Ronna"|"Quetta") */
 
+SI_PREFIX    [ \t]*("quecto"|"ronto"|"yocto"|"zepto"|"atto"|"femto"|"pico"|"nano"|"micro"|"milli"|"centi"|"deci"|"deka"|"hecto"|"kilo"|"Mega"|"Giga"|"Tera"|"Peta"|"Exa"|"Zetta"|"Yotta"|"Ronna"|"Quetta")
+    
+ANG_RAD  [ \t]*("rad")
+ANG     [ \t]*("\""|"''"|"'"|"deg")
+SOLID_ANG	[ \t]*"sr"
+FREQ	[ \t]*("mHz"|"Hz"|"kHz"|"MHz"|"GHz"|"THz")
+LENGTH  [ \t]*("pm"|"nm"|"um"|"mm"|"cm"|"dm"|"m"|"dam"|"hm"|"km"|"Mm"|"Gm")
+MASS    [ \t]*("pg"|"ng"|"ug"|"mg"|"cg"|"dg"|"g"|"kg"|"T"|"kT"|"MT"|"GT")
+TIME	[ \t]*("fs"|"ns"|"us"|"usec"|"ms"|"msec"|"s"|"sec"|"min"|"hr"|"day")
+CURRENT   [ \t]*("fA"|"pA"|"nA"|"uA"|"mA"|"A"|"kA"|"MA"|"MegA")
+TEMP    [ \t]*"K"
+LUMI    [ \t]*"cd"
 
 %%
  /* single character ops */
