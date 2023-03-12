@@ -9,16 +9,12 @@
 
 /* Definition (Substitution) Section */
 
-D		[0-9]
-INT		[+-]?{D}+
-NUM		{INT}
-
 /* SI_PREFIX    [ \t]*("q"|"r"|"y"|"z"|"a"|"f"|"p"|"n"|"u"|"m"|"c"|"d"|"da"|"h"|"k"|"M"|"G"|"T"|"P"|"E"|"Z"|"Y"|"R"|"Q"|"quecto"|"ronto"|"yocto"|"zepto"|"atto"|"femto"|"pico"|"nano"|"micro"|"milli"|"centi"|"deci"|"deka"|"hecto"|"kilo"|"Mega"|"Giga"|"Tera"|"Peta"|"Exa"|"Zetta"|"Yotta"|"Ronna"|"Quetta") */
 
 SI_PREFIX    [ \t]*("quecto"|"ronto"|"yocto"|"zepto"|"atto"|"femto"|"pico"|"nano"|"micro"|"milli"|"centi"|"deci"|"deka"|"hecto"|"kilo"|"Mega"|"Giga"|"Tera"|"Peta"|"Exa"|"Zetta"|"Yotta"|"Ronna"|"Quetta")
     
-ANG_RAD  [ \t]*("rad")
-ANG     [ \t]*("\""|"''"|"'"|"deg")
+ANG_RAD     [ \t]*("rad")
+ANG_DEG     [ \t]*("\""|"''"|"'"|"deg")
 SOLID_ANG	[ \t]*"sr"
 FREQ	[ \t]*("mHz"|"Hz"|"kHz"|"MHz"|"GHz"|"THz")
 LENGTH  [ \t]*("pm"|"nm"|"um"|"mm"|"cm"|"dm"|"m"|"dam"|"hm"|"km"|"Mm"|"Gm")
@@ -37,9 +33,8 @@ LUMI    [ \t]*"cd"
 "^" |
 "(" |
 ")"         { return yytext[0]; }
-[0-9]+	    { yylval.d = atoi(yytext); return NUM; }
+[0-9]+	    { yylval.d = atoi(yytext); return NUMBER; }
 [a-zA-Z]+   { yylval.s = strdup(yytext); return MEASURE; }
-
 \n      { return EOL; }
 [ \t]   { /* ignore white space */ }
 .	{ printf("Mystery character %c\n", *yytext); }

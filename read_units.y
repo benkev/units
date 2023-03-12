@@ -49,14 +49,13 @@ int mul[32];  /* powers of the prefix multipliers, like milli, kilo etc. */
 }
 
 /* Declare tokens (terminal symbols) */
-%token <d> NUM
+%token <d> NUMBER
 %token <s> MEASURE
-%token <d> EOL
+%token EOL
 
 /* Declare type for the expression (nonterminal symbol) */
 /* %type <s> exp */
 %type <d> numex
-%type <d> explist
 
 /* Declare precedence and associativity */
 /* Operators are declared in increasing order of precedence */
@@ -69,6 +68,11 @@ int mul[32];  /* powers of the prefix multipliers, like milli, kilo etc. */
 /* Grammar */
 %%
 
+explist:   /* empty */
+        | explist numex EOL   { printf("= %d\n> ", $2); }
+        | explist symex EOL   { printf("= %d\n> ", $2); }
+        | explist EOL         { printf("> "); } /* blank line or a comment */
+
 symex:    MEASURE              {          }
         | symex '*' symex        {     }
         | symex '/' symex        {     }
@@ -76,11 +80,7 @@ symex:    MEASURE              {          }
         | '(' symex ')'        {          }
 ;
 
-explist:   /* empty */
-        | explist numex EOL   { printf("= %d\n> ", $2); }
-        | explist EOL         { printf("> "); } /* blank line or a comment */
-
-numex:  NUM                      { $$ = $1;         }
+numex:  NUMBER                   { $$ = $1;         }
         | numex '+' numex        { $$ = $1 + $3;    }
         | numex '-' numex        { $$ = $1 - $3;    }
         | '-' numex  %prec NEG   { $$ = -$2;        }
