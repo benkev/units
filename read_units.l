@@ -34,21 +34,21 @@ JANSKY	[ \t]*"Jy"
 "/" |
 "^" |
 "(" |
-")"         { return yytext[0]; }
-[0-9]+	    { yylval.d = atoi(yytext); return T_number; }
-{LENGTH}   { yylval.s = strdup(yytext); return T_length; }
-{MASS}   { yylval.s = strdup(yytext); return T_mass; }
-{TIME}   { yylval.s = strdup(yytext); return T_time; }
-{CURRENT}   { yylval.s = strdup(yytext); return T_current; }
-{TEMP}   { yylval.s = strdup(yytext); return T_temp; }
-{LUMI}   { yylval.s = strdup(yytext); return T_lumi; }
-{MOLE}   { yylval.s = strdup(yytext); return T_mole; }
-{FREQ}   { yylval.s = strdup(yytext); return T_freq; }
-{ANG_RAD}   { yylval.s = strdup(yytext); return T_ang_rad; }
-{ANG_DEG}   { yylval.s = strdup(yytext); return T_ang_deg; }
-{SOLID_ANG}   { yylval.s = strdup(yytext); return T_solid_ang; }
-{JANSKY}   { yylval.s = strdup(yytext); return T_Jansky; }
-{SI_PREFIX}   { yylval.s = strdup(yytext); return ; }
+")"   { return yytext[0]; }
+[0-9]+	     { yylval.d = atoi(yytext); return T_number; }
+{LENGTH}     { yylval.s = strdup(yytext); return T_length; }
+{MASS}       { yylval.s = strdup(yytext); return T_mass; }
+{TIME}       { yylval.s = strdup(yytext); return T_time; }
+{CURRENT}    { yylval.s = strdup(yytext); return T_current; }
+{TEMP}       { yylval.s = strdup(yytext); return T_temp; }
+{LUMI}       { yylval.s = strdup(yytext); return T_lumi; }
+{MOLE}       { yylval.s = strdup(yytext); return T_mole; }
+{FREQ}       { yylval.s = strdup(yytext); return T_freq; }
+{ANG_RAD}    { yylval.s = strdup(yytext); return T_ang_rad; }
+{ANG_DEG}    { yylval.s = strdup(yytext); return T_ang_deg; }
+{SOLID_ANG}  { yylval.s = strdup(yytext); return T_solid_ang; }
+{JANSKY}     { yylval.s = strdup(yytext); return T_Jansky; }
+{SI_PREFIX}  { yylval.s = strdup(yytext); return ; }
 \n      { return EOL; }
 [ \t]   { /* ignore white space */ }
 .	{ printf("Mystery character %c\n", *yytext); }

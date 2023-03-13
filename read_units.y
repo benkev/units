@@ -76,10 +76,13 @@ enum measure_index i_measure;
 
 explist:   /* empty */
         | explist numex EOL   { printf("= %d\n> ", $2); }
-        | explist symex EOL   { printf("= %s\n> ", $2); }
-        | explist EOL         { for (int i=0; i<12; i++)
-                                    printf("%d ");
-                                printf("\n> "); } /* blank line or a comment */
+        | explist symex EOL   { printf("= %s\n> ", $2);
+                                for (int i=0; i<12; i++) printf("%d ", dim[i]);
+                                printf("\n> ");
+                                for (int i=0; i<32; i++) dim[i] = mul[i] = 0;
+                              }
+        | explist EOL         { for (int i=0; i<12; i++) dim[i] = mul[i] = 0;
+                                printf("\n> "); } /* blank line */
 ;
 
 symex:  measure              { $$ = $1;         }
