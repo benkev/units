@@ -13,16 +13,18 @@
 
 SI_PREFIX    [ \t]*("quecto"|"ronto"|"yocto"|"zepto"|"atto"|"femto"|"pico"|"nano"|"micro"|"milli"|"centi"|"deci"|"deka"|"hecto"|"kilo"|"Mega"|"Giga"|"Tera"|"Peta"|"Exa"|"Zetta"|"Yotta"|"Ronna"|"Quetta")
     
-ANG_RAD     [ \t]*("rad")
-ANG_DEG     [ \t]*("\""|"''"|"'"|"deg")
-SOLID_ANG	[ \t]*"sr"
-FREQ	[ \t]*("mHz"|"Hz"|"kHz"|"MHz"|"GHz"|"THz")
 LENGTH  [ \t]*("pm"|"nm"|"um"|"mm"|"cm"|"dm"|"m"|"dam"|"hm"|"km"|"Mm"|"Gm")
 MASS    [ \t]*("pg"|"ng"|"ug"|"mg"|"cg"|"dg"|"g"|"kg"|"T"|"kT"|"MT"|"GT")
 TIME	[ \t]*("fs"|"ns"|"us"|"usec"|"ms"|"msec"|"s"|"sec"|"min"|"hr"|"day")
 CURRENT   [ \t]*("fA"|"pA"|"nA"|"uA"|"mA"|"A"|"kA"|"MA"|"MegA")
 TEMP    [ \t]*"K"
 LUMI    [ \t]*"cd"
+MOLE    [ \t]*"mole"
+FREQ	[ \t]*("mHz"|"Hz"|"kHz"|"MHz"|"GHz"|"THz")
+ANG_RAD     [ \t]*("rad")
+ANG_DEG     [ \t]*("\""|"''"|"'"|"deg")
+SOLID_ANG	[ \t]*"sr"
+JANSKY	[ \t]*"Jy"
 
 %%
  /* single character ops */
@@ -33,12 +35,26 @@ LUMI    [ \t]*"cd"
 "^" |
 "(" |
 ")"         { return yytext[0]; }
-[0-9]+	    { yylval.d = atoi(yytext); return NUMBER; }
-[a-zA-Z]+   { yylval.s = strdup(yytext); return MEASURE; }
+[0-9]+	    { yylval.d = atoi(yytext); return T_number; }
+{LENGTH}   { yylval.s = strdup(yytext); return T_length; }
+{MASS}   { yylval.s = strdup(yytext); return T_mass; }
+{TIME}   { yylval.s = strdup(yytext); return T_time; }
+{CURRENT}   { yylval.s = strdup(yytext); return T_current; }
+{TEMP}   { yylval.s = strdup(yytext); return T_temp; }
+{LUMI}   { yylval.s = strdup(yytext); return T_lumi; }
+{MOLE}   { yylval.s = strdup(yytext); return T_mole; }
+{FREQ}   { yylval.s = strdup(yytext); return T_freq; }
+{ANG_RAD}   { yylval.s = strdup(yytext); return T_ang_rad; }
+{ANG_DEG}   { yylval.s = strdup(yytext); return T_ang_deg; }
+{SOLID_ANG}   { yylval.s = strdup(yytext); return T_solid_ang; }
+{JANSKY}   { yylval.s = strdup(yytext); return T_Jansky; }
+{SI_PREFIX}   { yylval.s = strdup(yytext); return ; }
 \n      { return EOL; }
 [ \t]   { /* ignore white space */ }
 .	{ printf("Mystery character %c\n", *yytext); }
 %%
+
+/* [a-zA-Z]+   { yylval.s = strdup(yytext); return MEASURE; } */
 
 
 /* int main(void) */

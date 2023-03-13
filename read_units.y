@@ -34,9 +34,12 @@ int yylex(void);
  *
  */
  
+ enum measure_index {i_length = 0, i_mass, i_time, i_current, i_temp, i_lumi,
+             i_mole, i_freq, i_ang_rad, i_ang_deg, i_solid_ang, i_Jansky};
+
 int dim[32];  /* powers of the units */
 int mul[32];  /* powers of the prefix multipliers, like milli, kilo etc. */
-
+enum measure_index i_measure;
 
 %}
 
@@ -49,13 +52,16 @@ int mul[32];  /* powers of the prefix multipliers, like milli, kilo etc. */
 }
 
 /* Declare tokens (terminal symbols) */
-%token <d> NUMBER
-%token <s> MEASURE
 %token EOL
+%token <d> T_number
+%token <s> T_SI_prefix
+%token <s> T_length T_mass T_time T_current T_temp T_lumi T_mole
+%token <s> T_freq T_ang_rad T_ang_deg T_solid_ang T_Jansky
 
 /* Declare type for the expression (nonterminal symbol) */
 /* %type <s> exp */
 %type <d> numex
+%type <s> measure symex
 
 /* Declare precedence and associativity */
 /* Operators are declared in increasing order of precedence */
@@ -70,17 +76,35 @@ int mul[32];  /* powers of the prefix multipliers, like milli, kilo etc. */
 
 explist:   /* empty */
         | explist numex EOL   { printf("= %d\n> ", $2); }
-        | explist symex EOL   { printf("= %d\n> ", $2); }
-        | explist EOL         { printf("> "); } /* blank line or a comment */
-
-symex:    MEASURE              {          }
-        | symex '*' symex        {     }
-        | symex '/' symex        {     }
-        | symex '^' numex      {  }
-        | '(' symex ')'        {          }
+        | explist symex EOL   { printf("= %s\n> ", $2); }
+        | explist EOL         { for (int i=0; i<12; i++)
+                                    printf("%d ");
+                                printf("\n> "); } /* blank line or a comment */
 ;
 
-numex:  NUMBER                   { $$ = $1;         }
+symex:  measure              { $$ = $1;         }
+        | symex '*' symex    { $$ = $1;    }
+        | symex '/' symex    { $$ = $1;    }
+        | symex '^' numex    { $$ = $1; }
+        | '(' symex ')'      { $$ = $2;         }
+;
+
+measure:   T_SI_prefix { $$ = $1; }
+         | T_length    { $$ = $1; dim[0]++; }
+         | T_mass      { $$ = $1; dim[1]++; }
+         | T_time      { $$ = $1; dim[2]++; }
+         | T_current   { $$ = $1; dim[3]++; }
+         | T_temp      { $$ = $1; dim[4]++; }
+         | T_lumi      { $$ = $1; dim[5]++; }
+         | T_mole      { $$ = $1; dim[6]++; }
+         | T_freq      { $$ = $1; dim[7]++; }
+         | T_ang_rad   { $$ = $1; dim[8]++; }
+         | T_ang_deg   { $$ = $1; dim[9]++; }
+         | T_solid_ang { $$ = $1; dim[10]++; }
+         | T_Jansky    { $$ = $1; dim[11]++; }
+;
+
+numex:  T_number                 { $$ = $1;         }
         | numex '+' numex        { $$ = $1 + $3;    }
         | numex '-' numex        { $$ = $1 - $3;    }
         | '-' numex  %prec NEG   { $$ = -$2;        }
@@ -94,7 +118,10 @@ numex:  NUMBER                   { $$ = $1;         }
 
 
 int main(int argc, char **argv) {
-    
+
+    int i;
+    for (i=0; i<32; i++) dim[i] = mul[i] = 0; 
+
     yyparse();
     
     return 0;
