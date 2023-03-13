@@ -34,9 +34,10 @@ int yylex(void);
  *
  */
  
- enum measure_index {i_length = 0, i_mass, i_time, i_current, i_temp, i_lumi,
+enum measure_index {i_length = 0, i_mass, i_time, i_current, i_temp, i_lumi,
              i_mole, i_freq, i_ang_rad, i_ang_deg, i_solid_ang, i_Jansky};
 
+int mea[32];  /* 1: a measure present, 0 - absent */
 int dim[32];  /* powers of the units */
 int mul[32];  /* powers of the prefix multipliers, like milli, kilo etc. */
 enum measure_index i_measure;
@@ -52,7 +53,7 @@ enum measure_index i_measure;
 }
 
 /* Declare tokens (terminal symbols) */
-%token EOL
+%token <d> EOL
 %token <d> T_number
 %token <s> T_SI_prefix
 %token <s> T_length T_mass T_time T_current T_temp T_lumi T_mole
@@ -79,9 +80,11 @@ explist:   /* empty */
         | explist symex EOL   { printf("= %s\n> ", $2);
                                 for (int i=0; i<12; i++) printf("%d ", dim[i]);
                                 printf("\n> ");
-                                for (int i=0; i<32; i++) dim[i] = mul[i] = 0;
+                                for (int i=0; i<32; i++)
+                                    mea[i] = dim[i] = mul[i] = 0;
                               }
-        | explist EOL         { for (int i=0; i<12; i++) dim[i] = mul[i] = 0;
+        | explist EOL         { for (int i=0; i<12; i++)
+                                  mea[i] = dim[i] = mul[i] = 0;
                                 printf("\n> "); } /* blank line */
 ;
 
@@ -93,18 +96,18 @@ symex:  measure              { $$ = $1;         }
 ;
 
 measure:   T_SI_prefix { $$ = $1; }
-         | T_length    { $$ = $1; dim[0]++; }
-         | T_mass      { $$ = $1; dim[1]++; }
-         | T_time      { $$ = $1; dim[2]++; }
-         | T_current   { $$ = $1; dim[3]++; }
-         | T_temp      { $$ = $1; dim[4]++; }
-         | T_lumi      { $$ = $1; dim[5]++; }
-         | T_mole      { $$ = $1; dim[6]++; }
-         | T_freq      { $$ = $1; dim[7]++; }
-         | T_ang_rad   { $$ = $1; dim[8]++; }
-         | T_ang_deg   { $$ = $1; dim[9]++; }
-         | T_solid_ang { $$ = $1; dim[10]++; }
-         | T_Jansky    { $$ = $1; dim[11]++; }
+         | T_length    { $$ = $1; mea[0]++; }
+         | T_mass      { $$ = $1; mea[1]++; }
+         | T_time      { $$ = $1; mea[2]++; }
+         | T_current   { $$ = $1; mea[3]++; }
+         | T_temp      { $$ = $1; mea[4]++; }
+         | T_lumi      { $$ = $1; mea[5]++; }
+         | T_mole      { $$ = $1; mea[6]++; }
+         | T_freq      { $$ = $1; mea[7]++; }
+         | T_ang_rad   { $$ = $1; mea[8]++; }
+         | T_ang_deg   { $$ = $1; mea[9]++; }
+         | T_solid_ang { $$ = $1; mea[10]++; }
+         | T_Jansky    { $$ = $1; mea[11]++; }
 ;
 
 numex:  T_number                 { $$ = $1;         }
@@ -123,7 +126,7 @@ numex:  T_number                 { $$ = $1;         }
 int main(int argc, char **argv) {
 
     int i;
-    for (i=0; i<32; i++) dim[i] = mul[i] = 0; 
+    for (i=0; i<32; i++) mea[i] = dim[i] = mul[i] = 0; 
 
     yyparse();
     
