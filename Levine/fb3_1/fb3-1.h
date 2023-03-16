@@ -3,7 +3,7 @@
  */
 
 /* interface to the lexer */
-/*extern int yylineno; /* from lexer */
+extern int yylineno; /* from lexer */
 void yyerror(char *s, ...);
 
 /* nodes in the Abstract Syntax Tree */

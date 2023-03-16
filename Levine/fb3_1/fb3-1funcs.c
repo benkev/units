@@ -6,6 +6,8 @@
 #  include <stdarg.h>
 #  include "fb3-1.h"
 
+int yyparse (void);
+
 struct ast *
 newast(int nodetype, struct ast *l, struct ast *r)
 {
