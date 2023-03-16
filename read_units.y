@@ -78,7 +78,7 @@ enum measure_index i_measure;
 explist:   /* empty */
         | explist numex EOL   { printf("= %d\n> ", $2); }
         | explist symex EOL   { printf("= %s\n> ", $2);
-                                for (int i=0; i<12; i++) printf("%d ", dim[i]);
+                          /* for (int i=0; i<12; i++) printf("%d ", dim[i]); */
                                 printf("\n> ");
                                 for (int i=0; i<32; i++)
                                     mea[i] = dim[i] = mul[i] = 0;
