@@ -48,7 +48,7 @@ JANSKY	[ \t]*"Jy"
 {ANG_DEG}    { yylval.s = strdup(yytext); return T_ang_deg; }
 {SOLID_ANG}  { yylval.s = strdup(yytext); return T_solid_ang; }
 {JANSKY}     { yylval.s = strdup(yytext); return T_Jansky; }
-{SI_PREFIX}  { yylval.s = strdup(yytext); return ; }
+{SI_PREFIX}  { yylval.s = strdup(yytext); return T_SI_prefix; }
 \n      { return EOL; }
 [ \t]   { /* ignore white space */ }
 .	{ printf("Mystery character %c\n", *yytext); }
