@@ -21,9 +21,8 @@ typedef struct num_leaf {
 
 /* Tree leaf with a measure value */
 typedef struct measure_leaf {
-  int nodetype;			/* type K */
+  int nodetype;			/* type M ??? */
   int measure;
-  int power;
   int prefix;
 } measure_leaf;
 
@@ -38,11 +37,11 @@ typedef struct expr_list {
 /* build an AST */
 ast_node *newast(int nodetype, ast_node *l, ast_node *r);
 ast_node *newnum(int d);
-ast_node *newmeas(int measure, int power, int prefix);
+ast_node *newmeas(int measure, int prefix);
 expr_list *newexpr(int measure, int power, int prefix, expr_list *next);
 
 /* Reduce an AST */
-int reduce(ast_node *);
+expr_list *reduce(ast_node *);
 
 /* delete and free an AST */
 void treefree(ast_node *);
