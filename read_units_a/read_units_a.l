@@ -34,9 +34,8 @@ JANSKY	[ \t]*"Jy"
 "(" |
 ")"   { return yytext[0]; }
 [0-9]+	     { yylval.d = atoi(yytext); return T_number; }
-[a-zA-Z]+	 { yylval.d = atoi(yytext); return T_symbol; }
-
 {SI_PREFIX}  { yylval.s = strdup(yytext); return T_SI_prefix; }
+[a-zA-Z]+	 { yylval.d = atoi(yytext); return T_symbol; }
 \n      { return EOL; }
 [ \t]   { /* ignore white space */ }
 .	{ printf("Mystery character %c\n", *yytext); }

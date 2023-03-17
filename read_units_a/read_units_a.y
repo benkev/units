@@ -99,19 +99,8 @@ symex:  measure              { $$ = $1;         }
         | '(' symex ')'      { $$ = $2;         }
 ;
 
-measure:   T_SI_prefix { $$ = $1; }
-         | T_length    { $$ = $1; mea[0]++; }
-         | T_mass      { $$ = $1; mea[1]++; }
-         | T_time      { $$ = $1; mea[2]++; }
-         | T_current   { $$ = $1; mea[3]++; }
-         | T_temp      { $$ = $1; mea[4]++; }
-         | T_lumi      { $$ = $1; mea[5]++; }
-         | T_mole      { $$ = $1; mea[6]++; }
-         | T_freq      { $$ = $1; mea[7]++; }
-         | T_ang_rad   { $$ = $1; mea[8]++; }
-         | T_ang_deg   { $$ = $1; mea[9]++; }
-         | T_solid_ang { $$ = $1; mea[10]++; }
-         | T_Jansky    { $$ = $1; mea[11]++; }
+measure: T_symbol    { $$ = $1; }
+         | T_SI_prefix T_symbol { $$ = $1; }
 ;
 
 numex:  T_number                 { $$ = $1;         }
