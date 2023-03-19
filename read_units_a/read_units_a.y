@@ -100,7 +100,7 @@ symex:  measure              { $$ = $1;         }
 ;
 
 measure: T_symbol    { $$ = $1; }
-         | T_SI_prefix T_symbol { $$ = $1; }
+         | T_SI_prefix T_symbol { $$ = $2; }
 ;
 
 numex:  T_number                 { $$ = $1;         }
