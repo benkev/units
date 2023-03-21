@@ -49,7 +49,7 @@ newmeas(int measure)
     exit(0);
   }
   a->nodetype = 'M';
-  a->number = d;
+  a->measure = measure;
   return (ast_node *)a;
 }
 
@@ -62,40 +62,96 @@ newexpr(int measure, int power, expr_list *next)
     yyerror("out of space");
     exit(0);
   }
-  a->nodetype = 'K';
-  a->number = d;
-  return (ast_node *)a;
+  a->measure = measure;
+  a->power = power;
+  a->next = next;
+  return a;
 }
 
 expr_list *
-reduce(ast_node *a)
-{
-  int pwr;
-  expr_list *exp, *expl, *expr;
+reduce(ast_node *a) {
+    int pwr, meas;
+    num_leaf *numleaf;
+    meas_leaf *measleaf;
+    expr_list *exp, *expl, *expr;
+    ast_node *nodl, *nodr;
 
-  switch(a->nodetype) {
-  case '^': {
-      pwr = (a->r)->number;
-      expl = reduce(a->l);  /* Either just a measure, or list with powers  */
-      if (expl->nodetype == 'M') {
-          exp = newexpr(expl->measure, pwr, globexpr);
-          return exp;
-      }
-      else { /* Multiply powers of every list item by pwr */
-          
-      }
-      break;
-  }
+    switch(a->nodetype) {
+    case '^': {
+        numleaf = (num_leaf *) a->r;
+        if (numleaf->nodetype != 'K') {
+            printf("Error: non-numeric power exponent, node type  %c\n",
+                   numleaf->nodetype);
+            return 0;
+        }
+        pwr = numleaf->number;
+
+        nodl = a->l;
+        if (nodl->nodetype == 'M') {
+            measleaf = (meas_leaf *) nodl;
+            exp = newexpr(measleaf->measure, pwr, 0);
+        }
+        else {
+            expl = reduce(nodl);
+            /* Multiply powers of every list item by pwr */
+            exp = mulpwr(expl, pwr);
+        }
+        break;
+    }
       
-  case 'K': v = ((num_leaf *)a)->number; break;
+    case '*': {
+        nodl = a->l;
+        if (nodl->nodetype == 'M') {
+            measleaf = (meas_leaf *) nodl;
+            expl = newexpr(measleaf->measure, 1, 0);
+        }
+        else
+            expl = reduce(nodl);
+        
+        nodr = a->r;
+        if (nodr->nodetype == 'M') {
+            measleaf = (meas_leaf *) nodr;
+            expr = newexpr(measleaf->measure, 1, 0);
+        }
+        else
+            expr = reduce(nodr);
 
-  case '*': v = eval(a->l) * eval(a->r); break;
-  case '/': v = eval(a->l) / eval(a->r); break;
-  case 'M': v = -eval(a->l); break;
-  default: printf("internal error: bad node %c\n", a->nodetype);
-  }
-  return v;
+        exp = concat(expl, expr);
+        
+        break;
+    }
+      
+    case '/': {
+        nodl = a->l;
+        if (nodl->nodetype == 'M') {
+            measleaf = (meas_leaf *) nodl;
+            expl = newexpr(measleaf->measure, 1, 0);
+        }
+        else
+            expl = reduce(nodl);
+        
+        nodr = a->r;
+        if (nodr->nodetype == 'M') {
+            measleaf = (meas_leaf *) nodr;
+            expr = newexpr(measleaf->measure, -1, 0);
+        }
+        else
+            expr = reduce(nodr);
+        
+        /* Multiply powers of every list item by -1 */
+        expr = mulpwr(expr, -1);
+        
+        exp = concat(expl, expr);
+        
+        break;
+    }
+
+    default: printf("internal error: bad node %c\n", a->nodetype);
+    }
+    
+    return exp;
 }
+
 
 void
 treefree(ast_node *a)
