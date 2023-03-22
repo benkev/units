@@ -92,9 +92,9 @@ reduce(ast_node *a) {
             exp = newexpr(measleaf->measure, pwr, 0);
         }
         else {
-            expl = reduce(nodl);
+            exp = reduce(nodl);
             /* Multiply powers of every list item by pwr */
-            exp = mulpwr(expl, pwr);
+            mulpwr(exp, pwr);
         }
         break;
     }
@@ -135,12 +135,11 @@ reduce(ast_node *a) {
             measleaf = (meas_leaf *) nodr;
             expr = newexpr(measleaf->measure, -1, 0);
         }
-        else
+        else {
             expr = reduce(nodr);
-        
-        /* Multiply powers of every list item by -1 */
-        expr = mulpwr(expr, -1);
-        
+            /* Multiply powers of every list item by -1 */
+            mulpwr(expr, -1);
+        }
         exp = concat(expl, expr);
         
         break;
@@ -159,18 +158,16 @@ treefree(ast_node *a)
   switch(a->nodetype) {
 
     /* two subtrees */
-  case '+':
-  case '-':
   case '*':
   case '/':
     treefree(a->r);
 
     /* one subtree */
-  case '|':
-  case 'M':
+  case '^':
     treefree(a->l);
 
     /* no subtree */
+  case 'M':
   case 'K':
     free(a);
     break;
@@ -178,6 +175,33 @@ treefree(ast_node *a)
   default: printf("internal error: free bad node %c\n", a->nodetype);
   }
 }
+
+
+/* 
+ * Multiply powers of every list item by pwr 
+ */
+void mulpwr(expr_list *const exp, int pwr) {
+
+    expr_list *ep = exp;
+    while (ep->next) {
+        ep->power *= pwr;
+        ep = ep->next;
+    }
+}
+
+/*
+ * Join lists expl and expr
+ */
+expr_list *concat(expr_list *const expl, expr_list *const expr) {
+
+    expr_list *ep = expl;
+    while (ep->next)
+        ep = ep->next;
+    ep->next = expr; /* Point the last expl item at the first item of expr */ 
+    
+    return expl;
+}
+
 
 void
 yyerror(char *s, ...)

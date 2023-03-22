@@ -79,8 +79,8 @@ ast_node *newast(int nodetype, ast_node *l, ast_node *r);
 ast_node *newnum(int d);
 ast_node *newmeas(int measure);
 expr_list *newexpr(int measure, int power, expr_list *next);
-expr_list *concat(expr_list *expl, expr_list *expr);
-expr_list *mulpwr(expr_list *exp, int pwr);
+expr_list *concat(expr_list *const expl, expr_list *const expr);
+void mulpwr(expr_list *const exp, int pwr);
                    
 /* Reduce an AST */
 expr_list *reduce(ast_node *);

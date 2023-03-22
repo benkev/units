@@ -89,13 +89,11 @@ explist:   /* empty */
                                 printf("\n> "); } /* blank line */
 ;
 
-symex:  measure              { $$ = $1;         }
-        | symex '*' symex    { $$ = $1;    }
-        | symex '/' symex    { $$ = $1;    }
-        | symex '^' numex    {
-            ast_node *ipow = newnum($3);
-            $$ = newmeas(
-        }
+symex:  measure              { $$ = newmeas($1); }
+        | symex '*' symex    { $$ = newast('*', $1, $3); }
+        | symex '/' symex    { $$ = newast('/', $1, $3);  }
+        | symex '^' numex    { ast_node *ipow = (ast_node *) newnum($3);
+                               $$ = newast('^', $1, ipow); }
         | '(' symex ')'      { $$ = $2;         }
 ;
 
