@@ -99,7 +99,7 @@ symex:  measure              { $$ = newmeas($1); }
         | '(' symex ')'      { $$ = $2; }
 ;
 
-measure: T_symbol    { $$ = getmeas($1); printf("sym=%s, mea=%d\n",$1,$$);}
+measure: T_symbol    { printf("sym='%s'\n",$1); $$ = getmeas($1); }
 ;
 
 numex:  T_number                 { $$ = $1;         }
@@ -116,7 +116,11 @@ numex:  T_number                 { $$ = $1;         }
 
 
 int main(int argc, char **argv) {
-
+    
+#ifdef YYDEBUG
+    yydebug = 1;
+#endif
+    
     yyparse();
     
     return 0;
