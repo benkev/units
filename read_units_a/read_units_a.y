@@ -6,8 +6,8 @@
     
 #include <stdio.h>
 #include <math.h>
-
-void yyerror(char const *s);
+#include "read_units_a.h"
+    
 int yylex(void);
  
 /* int yylex(yyscan_t scanner); */
@@ -48,8 +48,9 @@ enum measure_index i_measure;
  * Parse stack element
  */
 %union {
-  char  *s;
-  int    d;
+    ast_node *a;
+    char  *s;
+    int    d;
 }
 
 /* Declare tokens (terminal symbols) */
@@ -62,7 +63,8 @@ enum measure_index i_measure;
 /* Declare type for the expression (nonterminal symbol) */
 /* %type <s> exp */
 %type <d> numex
-%type <s> measure symex
+%type <d> measure 
+%type <a> symex
 
 /* Declare precedence and associativity */
 /* Operators are declared in increasing order of precedence */
@@ -79,26 +81,25 @@ explist:   /* empty */
         | explist numex EOL   {
           printf("= %d\n> ", $2);
         }
-        | explist symex EOL   {
-            expr_list *el = reduce($2);
-            printf("Reduced.\n> ");
+        | explist symex EOL   { ast_node *a = $2;
+     printf("nodetype = %c, l = %p, r = %p\n", a->nodetype, a->l, a->r);
+     //expr_list *el = reduce($2);
+     //printf("Reduced.\n> ");
+            
             printf("\n> ");
         }
-        | explist EOL         { for (int i=0; i<12; i++)
-                                  mea[i] = dim[i] = mul[i] = 0;
-                                printf("\n> "); } /* blank line */
+        | explist EOL         { printf("\n> "); } /* blank line */
 ;
 
 symex:  measure              { $$ = newmeas($1); }
         | symex '*' symex    { $$ = newast('*', $1, $3); }
         | symex '/' symex    { $$ = newast('/', $1, $3);  }
-        | symex '^' numex    { ast_node *ipow = (ast_node *) newnum($3);
+        | symex '^' numex    { ast_node *ipow = newnum($3);
                                $$ = newast('^', $1, ipow); }
-        | '(' symex ')'      { $$ = $2;         }
+        | '(' symex ')'      { $$ = $2; }
 ;
 
-measure: T_symbol    { $$ = $1; }
-         | T_SI_prefix T_symbol { $$ = $2; }
+measure: T_symbol    { $$ = getmeas($1); printf("sym=%s, mea=%d\n",$1,$$);}
 ;
 
 numex:  T_number                 { $$ = $1;         }
@@ -116,14 +117,8 @@ numex:  T_number                 { $$ = $1;         }
 
 int main(int argc, char **argv) {
 
-    int i;
-    for (i=0; i<32; i++) mea[i] = dim[i] = mul[i] = 0; 
-
     yyparse();
     
     return 0;
 }
 
-void yyerror(char const *s) {
-    fprintf(stderr, "error: %s\n", s);
-}

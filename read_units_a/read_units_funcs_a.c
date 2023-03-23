@@ -4,11 +4,56 @@
 #  include <stdio.h>
 #  include <stdlib.h>
 #  include <stdarg.h>
+#  include <string.h>
 #  include "read_units_a.h"
+
+/*
+ * Table of measurement units
+ */
+#define NMEAS 13
+#define NMODS 13
+
+char const *const meas_tab[NMEAS][NMODS] = {
+    {"pm","nm","um","mm","cm","dm","m","dam","hm","km","Mm","Gm",0},
+    {"pg","ng","ug","mg","cg","dg","g","kg","T","kT","MT","GT",0},
+    {"fs","ps","ns","us","usec","ms","msec","s","sec",0},
+    {"min","hr","day","mon","yr",0},
+    {"fA","pA","nA","uA","mA","A","kA","MA","MegA",0,0,0,0},
+    {"K",0,0,0,0,0,0,0,0,0,0,0,0},
+    {"cd",0,0,0,0,0,0,0,0,0,0,0,0},
+    {"mole",0,0,0,0,0,0,0,0,0,0,0,0},
+    {"mHz","Hz","kHz","MHz","GHz","THz",0,0,0,0,0,0,0},
+    {"rad",0,0,0,0,0,0,0,0,0,0,0,0},
+    {"\"","''","'","deg",0,0,0,0,0,0,0,0,0},
+    {"sr",0,0,0,0,0,0,0,0,0,0,0,0},
+    {"Jy",0,0,0,0,0,0,0,0,0,0,0,0},
+};
+
+/*
+ * Table of multipliers contains decimal powers, like -3 for "milli" etc.
+ */
+char const mul_tab[NMEAS][NMODS] = {
+    {-12,-9,-6,-3,-2,-1,0,1,2,3,6,9,127},
+    {-12,-9,-6,-3,-2,-1,0,3,6,9,12,15,127},
+    {-15,-12,-9,-6,-6,-3,-3,127,127},
+    {0,0,0,0,0,127,127,127,127,127,127,127},
+    {-15,-12,-9,-6,-3,0,3,6,6,127,127,127,127},
+    {0,127,127,127,127,127,127,127,127,127,127,127,127},
+    {0,127,127,127,127,127,127,127,127,127,127,127,127},
+    {0,127,127,127,127,127,127,127,127,127,127,127,127},
+    {-3,0,3,6,9,12,127,127,127,127,127,127,127},
+    {0,127,127,127,127,127,127,127,127,127,127,127,127},
+    {0,0,0,0,127,127,127,127,127,127,127,127,127},
+    {0,127,127,127,127,127,127,127,127,127,127,127,127},
+    {0,127,127,127,127,127,127,127,127,127,127,127,127},
+};
+
+
 
 extern expr_list *globexpr;
 
 int yyparse (void);
+
 
 ast_node *
 newast(int nodetype, ast_node *l, ast_node *r)
@@ -22,8 +67,13 @@ newast(int nodetype, ast_node *l, ast_node *r)
   a->nodetype = nodetype;
   a->l = l;
   a->r = r;
+
+  printf("nodetype = %c, l = %p, r = %p\n", a->nodetype, a->l, a->r);
+  
+  
   return a;
 }
+
 
 ast_node *
 newnum(int d)
@@ -39,6 +89,7 @@ newnum(int d)
   return (ast_node *)a;
 }
 
+
 ast_node *
 newmeas(int measure)
 {
@@ -52,6 +103,7 @@ newmeas(int measure)
   a->measure = measure;
   return (ast_node *)a;
 }
+
 
 expr_list *
 newexpr(int measure, int power, expr_list *next)
@@ -67,6 +119,7 @@ newexpr(int measure, int power, expr_list *next)
   a->next = next;
   return a;
 }
+
 
 expr_list *
 reduce(ast_node *a) {
@@ -202,6 +255,35 @@ expr_list *concat(expr_list *const expl, expr_list *const expr) {
     return expl;
 }
 
+/*
+ * Lookup the table of measurement units meas_tab to find the measure index
+ * from its row and column locations. 
+ * For example, 'GHz' is at [8,4]. The row, 8, denotes 'Frequency in Hz'. 
+ * Use the indices found to get the unit multiplier mul
+ * in mul_tab. For example, mul_tab[8][4] is 9, so GHz is Hzx10^9. 
+ * Return the combined measure index as an integer row*256 + mul (or, the same,
+ * row<<8 + mul).
+ * If the measurement unit sym is not found in meas_tab, -1 is returned.
+ */
+int getmeas(char const *sym) {
+
+    int i, j, streq;
+    for (i=0; i<NMEAS; i++) {
+        j = 0;
+        while (meas_tab[i][j] != 0) {
+            streq = strcmp(meas_tab[i][j], sym);
+            if (streq == 0) break;
+            j++;
+        }
+        if (streq == 0) break;
+    }
+    if (streq == 0)
+        return i<<8 + mul_tab[i][j];
+    else
+        return -1;
+
+}
+
 
 void
 yyerror(char *s, ...)
@@ -214,9 +296,9 @@ yyerror(char *s, ...)
   fprintf(stderr, "\n");
 }
 
-int
-main()
-{
-  printf("> "); 
-  return yyparse();
-}
+/* int */
+/* main() */
+/* { */
+/*   printf("> ");  */
+/*   return yyparse(); */
+/* } */

@@ -14,7 +14,7 @@
 #define NMEAS 13
 #define NMODS 13
 
-char const *meas_tab[NMEAS][NMODS] = {
+char const *const meas_tab[NMEAS][NMODS] = {
     {"pm","nm","um","mm","cm","dm","m","dam","hm","km","Mm","Gm",0},
     {"pg","ng","ug","mg","cg","dg","g","kg","T","kT","MT","GT",0},
     {"fs","ps","ns","us","usec","ms","msec","s","sec",0},
@@ -46,7 +46,6 @@ char const mul_tab[NMEAS][NMODS] = {
     {0,127,127,127,127,127,127,127,127,127,127,127,127},
 };
 
-/* char *meas_tab[12][16]; */
 
 int main(int argc, char *argv[]) {
 
