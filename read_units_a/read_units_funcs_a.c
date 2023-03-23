@@ -13,6 +13,10 @@
 #define NMEAS 13
 #define NMODS 13
 
+
+char const *const measures[NMEAS] = {"m", "g", "s", "day", "A", "K", "cd", \
+    "mole", "Hz", "rad", "deg", "sr", "Jy"};
+
 char const *const meas_tab[NMEAS][NMODS] = {
     {"pm","nm","um","mm","cm","dm","m","dam","hm","km","Mm","Gm",0},
     {"pg","ng","ug","mg","cg","dg","g","kg","T","kT","MT","GT",0},
@@ -67,10 +71,6 @@ newast(int nodetype, ast_node *l, ast_node *r)
   a->nodetype = nodetype;
   a->l = l;
   a->r = r;
-
-  printf("newast(): nodetype = %c, l = %p, r = %p\n", a->nodetype, a->l, a->r);
-  
-  
   return a;
 }
 
@@ -277,11 +277,50 @@ int getmeas(char const *sym) {
         }
         if (streq == 0) break;
     }
-    if (streq == 0)
-        return i<<8 + mul_tab[i][j];
+    if (streq == 0) {
+        /* printf("'%s': i=%d, j=%d, mul_tab[i][j]=%d, return: %d\n",sym,i,j, */
+        /*        (int) mul_tab[i][j], (i<<8) + (int) mul_tab[i][j]);  */
+        return (i<<8) + (int) mul_tab[i][j];
+    }
     else
         return -1;
 
+}
+
+
+void print_tree(ast_node *a) {
+
+    switch(a->nodetype) {
+    /* two subtrees */
+    case '*':
+    case '/':
+        printf("Node '%c'\n", a->nodetype);
+         printf("Right subtree:\n");
+        print_tree(a->r);
+
+    /* one subtree */
+    case '^':
+        printf("Node '%c'\n", a->nodetype);
+        printf("Left subtree:\n");
+        print_tree(a->l);
+
+    /* no subtree */
+    case 'K': {
+        num_leaf *nl = (num_leaf *)a;
+        printf("Leaf '%c': Number %d\n", a->nodetype, nl->number);
+        break;
+    }
+    case 'M': {
+        meas_leaf *ml = (meas_leaf *)a;
+        int mea = ml->measure;
+        int mu = mea/256, mul = mea%256;
+        printf("Leaf '%c': Measure 0x%08x: %s x 10^%d\n", a->nodetype, mea,
+               measures[mu], mul);
+        break;
+    }
+    default: printf("internal error: free bad node %c\n", a->nodetype);
+    }
+    return;
 }
 
 

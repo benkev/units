@@ -82,6 +82,7 @@ expr_list *newexpr(int measure, int power, expr_list *next);
 expr_list *concat(expr_list *const expl, expr_list *const expr);
 void mulpwr(expr_list *const exp, int pwr);
 int getmeas(char const *sym);
+void print_tree(ast_node *a);
 
 /* Reduce an AST */
 expr_list *reduce(ast_node *);

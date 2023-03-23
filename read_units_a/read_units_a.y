@@ -82,11 +82,11 @@ explist:   /* empty */
           printf("= %d\n> ", $2);
         }
         | explist symex EOL   { ast_node *a = $2;
-     printf("nodetype = %c, l = %p, r = %p\n", a->nodetype, a->l, a->r);
-     //expr_list *el = reduce($2);
-     //printf("Reduced.\n> ");
+                                print_tree($2);
+                                expr_list *el = reduce($2);
+                                printf("Reduced.\n> ");
             
-            printf("\n> ");
+                                //printf("\n> ");
         }
         | explist EOL         { printf("\n> "); } /* blank line */
 ;
@@ -94,15 +94,16 @@ explist:   /* empty */
 symex:  measure              { $$ = newmeas($1); }
         | symex '*' symex    { $$ = newast('*', $1, $3); }
         | symex '/' symex    { $$ = newast('/', $1, $3);  }
-        | symex '^' numex    { printf("pwr='%d'\n",$3); ast_node *ipow = newnum($3);
+        | symex '^' numex    { ast_node *ipow = newnum($3);
                                $$ = newast('^', $1, ipow); }
         | '(' symex ')'      { $$ = $2; }
 ;
 
-measure: T_symbol    { printf("sym='%s'\n",$1); $$ = getmeas($1); }
+measure: T_symbol    { $$ = getmeas($1);
+     printf("sym='%s', meas = %d = %d<<8 + %d\n", $1, $$, $$/256, $$%256); }
 ;
 
-numex:  T_number                 { printf("num='%d'\n",$1); $$ = $1;         }
+numex:  T_number                 { $$ = $1;         }
         | numex '+' numex        { $$ = $1 + $3;    }
         | numex '-' numex        { $$ = $1 - $3;    }
         | '-' numex  %prec NEG   { $$ = -$2;        }
