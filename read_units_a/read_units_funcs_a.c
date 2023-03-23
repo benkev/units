@@ -68,7 +68,7 @@ newast(int nodetype, ast_node *l, ast_node *r)
   a->l = l;
   a->r = r;
 
-  printf("nodetype = %c, l = %p, r = %p\n", a->nodetype, a->l, a->r);
+  printf("newast(): nodetype = %c, l = %p, r = %p\n", a->nodetype, a->l, a->r);
   
   
   return a;

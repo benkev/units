@@ -94,7 +94,7 @@ explist:   /* empty */
 symex:  measure              { $$ = newmeas($1); }
         | symex '*' symex    { $$ = newast('*', $1, $3); }
         | symex '/' symex    { $$ = newast('/', $1, $3);  }
-        | symex '^' numex    { ast_node *ipow = newnum($3);
+        | symex '^' numex    { printf("pwr='%d'\n",$3); ast_node *ipow = newnum($3);
                                $$ = newast('^', $1, ipow); }
         | '(' symex ')'      { $$ = $2; }
 ;
@@ -102,7 +102,7 @@ symex:  measure              { $$ = newmeas($1); }
 measure: T_symbol    { printf("sym='%s'\n",$1); $$ = getmeas($1); }
 ;
 
-numex:  T_number                 { $$ = $1;         }
+numex:  T_number                 { printf("num='%d'\n",$1); $$ = $1;         }
         | numex '+' numex        { $$ = $1 + $3;    }
         | numex '-' numex        { $$ = $1 - $3;    }
         | '-' numex  %prec NEG   { $$ = -$2;        }
@@ -117,9 +117,9 @@ numex:  T_number                 { $$ = $1;         }
 
 int main(int argc, char **argv) {
     
-#ifdef YYDEBUG
-    yydebug = 1;
-#endif
+/* #ifdef YYDEBUG */
+/*     yydebug = 1; */
+/* #endif */
     
     yyparse();
     
