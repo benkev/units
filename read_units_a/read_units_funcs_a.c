@@ -37,19 +37,19 @@ char const *const meas_tab[NMEAS][NMODS] = {
  * Table of multipliers contains decimal powers, like -3 for "milli" etc.
  */
 char const mul_tab[NMEAS][NMODS] = {
-    {-12,-9,-6,-3,-2,-1,0,1,2,3,6,9,127},
-    {-12,-9,-6,-3,-2,-1,0,3,6,9,12,15,127},
-    {-15,-12,-9,-6,-6,-3,-3,127,127},
-    {0,0,0,0,0,127,127,127,127,127,127,127},
-    {-15,-12,-9,-6,-3,0,3,6,6,127,127,127,127},
-    {0,127,127,127,127,127,127,127,127,127,127,127,127},
-    {0,127,127,127,127,127,127,127,127,127,127,127,127},
-    {0,127,127,127,127,127,127,127,127,127,127,127,127},
-    {-3,0,3,6,9,12,127,127,127,127,127,127,127},
-    {0,127,127,127,127,127,127,127,127,127,127,127,127},
-    {0,0,0,0,127,127,127,127,127,127,127,127,127},
-    {0,127,127,127,127,127,127,127,127,127,127,127,127},
-    {0,127,127,127,127,127,127,127,127,127,127,127,127},
+    {-12, -9, -6, -3, -2, -1,  0,  1,  2,  3,  6,  9,127},
+    {-12, -9, -6, -3, -2, -1,  0,  3,  6,  9, 12, 15,127},
+    {-15,-12, -9, -6, -6, -3, -3,  0,  0,127,127,127,127},
+    {  0,  0,  0,  0,  0,127,127,127,127,127,127,127,127},
+    {-15,-12, -9, -6, -3,  0,  3,  6,  6,127,127,127,127},
+    {  0,127,127,127,127,127,127,127,127,127,127,127,127},
+    {  0,127,127,127,127,127,127,127,127,127,127,127,127},
+    {  0,127,127,127,127,127,127,127,127,127,127,127,127},
+    { -3,  0,  3,  6,  9, 12,127,127,127,127,127,127,127},
+    {  0,127,127,127,127,127,127,127,127,127,127,127,127},
+    {  0,  0,  0,  0,127,127,127,127,127,127,127,127,127},
+    {  0,127,127,127,127,127,127,127,127,127,127,127,127},
+    {  0,127,127,127,127,127,127,127,127,127,127,127,127},
 };
 
 
@@ -278,9 +278,10 @@ int getmeas(char const *sym) {
         if (streq == 0) break;
     }
     if (streq == 0) {
-        /* printf("'%s': i=%d, j=%d, mul_tab[i][j]=%d, return: %d\n",sym,i,j, */
-        /*        (int) mul_tab[i][j], (i<<8) + (int) mul_tab[i][j]);  */
-        return (i<<8) + (int) mul_tab[i][j];
+        /* printf("\n'%s': i=%d, j=%d, mul=%d, ret=%d\n", sym, i, j, */
+        /*       (int) mul_tab[i][j], ((int)mul_tab[i][j])<<8 | (int)i); */
+        
+        return ((int)mul_tab[i][j])<<8 | i;
     }
     else
         return -1;
@@ -288,23 +289,38 @@ int getmeas(char const *sym) {
 }
 
 
+void print_list(expr_list *const expr) {
+    
+    expr_list *ex = expr;
+    int mea, mu, mul;
+    while (ex->next) {
+        mea = ex->measure;
+        mu = 0x0ff&mea, mul = mea>>8;
+        printf("(%s x 10^%d)^%d\n", measures[mu], mul, ex->power);
+        ex = ex->next;
+    }
+}
+
+
 void print_tree(ast_node *a) {
 
     switch(a->nodetype) {
-    /* two subtrees */
+        /* two subtrees */
     case '*':
     case '/':
         printf("Node '%c'\n", a->nodetype);
-         printf("Right subtree:\n");
+        printf("Right subtree: a->r = 0x%p\n", a->r);
         print_tree(a->r);
+        /* break; */
 
-    /* one subtree */
+        /* one subtree */
     case '^':
         printf("Node '%c'\n", a->nodetype);
-        printf("Left subtree:\n");
+        printf("Left subtree: a->l = 0x%p\n", a->l);
         print_tree(a->l);
+        break;
 
-    /* no subtree */
+        /* no subtree */
     case 'K': {
         num_leaf *nl = (num_leaf *)a;
         printf("Leaf '%c': Number %d\n", a->nodetype, nl->number);
@@ -313,7 +329,7 @@ void print_tree(ast_node *a) {
     case 'M': {
         meas_leaf *ml = (meas_leaf *)a;
         int mea = ml->measure;
-        int mu = mea/256, mul = mea%256;
+        int mu = 0x0ff&mea, mul = mea>>8;
         printf("Leaf '%c': Measure 0x%08x: %s x 10^%d\n", a->nodetype, mea,
                measures[mu], mul);
         break;

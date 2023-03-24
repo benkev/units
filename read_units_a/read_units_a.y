@@ -82,11 +82,11 @@ explist:   /* empty */
           printf("= %d\n> ", $2);
         }
         | explist symex EOL   { ast_node *a = $2;
-                                print_tree($2);
+     //print_tree($2);
                                 expr_list *el = reduce($2);
-                                printf("Reduced.\n> ");
-            
-                                //printf("\n> ");
+                                printf("Reduced to list:\n> ");
+                                print_list(el);
+                                printf("\n> ");
         }
         | explist EOL         { printf("\n> "); } /* blank line */
 ;
@@ -100,7 +100,9 @@ symex:  measure              { $$ = newmeas($1); }
 ;
 
 measure: T_symbol    { $$ = getmeas($1);
-     printf("sym='%s', meas = %d = %d<<8 + %d\n", $1, $$, $$/256, $$%256); }
+     printf("sym='%s', meas = %d => %d x 10^%d\n", $1, $$, 0x0ff&$$, $$>>8); }
+     /* printf("sym='%s', meas = %d = %d | %d\n", $1, $$, ((umea)$$).imea, */
+     /*        ((umea)$$).mul); } */
 ;
 
 numex:  T_number                 { $$ = $1;         }
