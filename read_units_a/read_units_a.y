@@ -82,7 +82,7 @@ explist:   /* empty */
           printf("= %d\n> ", $2);
         }
         | explist symex EOL   { ast_node *a = $2;
-     //print_tree($2);
+                                print_tree($2);
                                 expr_list *el = reduce($2);
                                 printf("Reduced to list:\n> ");
                                 print_list(el);

@@ -308,30 +308,23 @@ void print_tree(ast_node *a) {
         /* two subtrees */
     case '*':
     case '/':
-        printf("Node '%c'\n", a->nodetype);
-        printf("Right subtree: a->r = 0x%p\n", a->r);
-        print_tree(a->r);
-        /* break; */
-
-        /* one subtree */
     case '^':
-        printf("Node '%c'\n", a->nodetype);
-        printf("Left subtree: a->l = 0x%p\n", a->l);
+        printf("'%c' ==> ", a->nodetype);
+        print_tree(a->r);
         print_tree(a->l);
         break;
 
         /* no subtree */
     case 'K': {
         num_leaf *nl = (num_leaf *)a;
-        printf("Leaf '%c': Number %d\n", a->nodetype, nl->number);
+        printf("'%d'\n", nl->number);
         break;
     }
     case 'M': {
         meas_leaf *ml = (meas_leaf *)a;
         int mea = ml->measure;
         int mu = 0x0ff&mea, mul = mea>>8;
-        printf("Leaf '%c': Measure 0x%08x: %s x 10^%d\n", a->nodetype, mea,
-               measures[mu], mul);
+        printf("'%s x 10^%d'\n", measures[mu], mul);
         break;
     }
     default: printf("internal error: free bad node %c\n", a->nodetype);
