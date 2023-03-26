@@ -108,21 +108,25 @@ newmeas(int measure)
 expr_list *
 newexpr(int measure, int power, expr_list *next)
 {
-  expr_list *a = malloc(sizeof(expr_list));
+  expr_list *ep = malloc(sizeof(expr_list));
   
-  if(!a) {
+  if(!ep) {
     yyerror("out of space");
     exit(0);
   }
-  a->measure = measure;
-  a->power = power;
-  a->next = next;
-  return a;
+
+  /* int imea = 0x0ff & measure; */
+  /* printf("newexpr: ep = %p, next = %p, '%s'\n", ep, next, measures[imea]); */
+  
+  ep->measure = measure;
+  ep->power = power;
+  ep->next = next;
+  return ep;
 }
 
 
 expr_list *
-reduce(ast_node *a) {
+reduce(ast_node *a, expr_list *head) {
     int pwr, meas;
     num_leaf *numleaf;
     meas_leaf *measleaf;
@@ -142,10 +146,10 @@ reduce(ast_node *a) {
         nodl = a->l;
         if (nodl->nodetype == 'M') {
             measleaf = (meas_leaf *) nodl;
-            exp = newexpr(measleaf->measure, pwr, 0);
+            exp = newexpr(measleaf->measure, pwr, head);
         }
         else {
-            exp = reduce(nodl);
+            exp = reduce(nodl, head);
             /* Multiply powers of every list item by pwr */
             mulpwr(exp, pwr);
         }
@@ -156,18 +160,18 @@ reduce(ast_node *a) {
         nodl = a->l;
         if (nodl->nodetype == 'M') {
             measleaf = (meas_leaf *) nodl;
-            expl = newexpr(measleaf->measure, 1, 0);
+            expl = newexpr(measleaf->measure, 1, head);
         }
         else
-            expl = reduce(nodl);
+            expl = reduce(nodl, head);
         
         nodr = a->r;
         if (nodr->nodetype == 'M') {
             measleaf = (meas_leaf *) nodr;
-            expr = newexpr(measleaf->measure, 1, 0);
+            expr = newexpr(measleaf->measure, 1, head);
         }
         else
-            expr = reduce(nodr);
+            expr = reduce(nodr, head);
 
         exp = concat(expl, expr);
         
@@ -178,18 +182,18 @@ reduce(ast_node *a) {
         nodl = a->l;
         if (nodl->nodetype == 'M') {
             measleaf = (meas_leaf *) nodl;
-            expl = newexpr(measleaf->measure, 1, 0);
+            expl = newexpr(measleaf->measure, 1, head);
         }
         else
-            expl = reduce(nodl);
+            expl = reduce(nodl, head);
         
         nodr = a->r;
         if (nodr->nodetype == 'M') {
             measleaf = (meas_leaf *) nodr;
-            expr = newexpr(measleaf->measure, -1, 0);
+            expr = newexpr(measleaf->measure, -1, head);
         }
         else {
-            expr = reduce(nodr);
+            expr = reduce(nodr, head);
             /* Multiply powers of every list item by -1 */
             mulpwr(expr, -1);
         }
@@ -236,7 +240,7 @@ treefree(ast_node *a)
 void mulpwr(expr_list *const exp, int pwr) {
 
     expr_list *ep = exp;
-    while (ep->next) {
+    while (ep) {
         ep->power *= pwr;
         ep = ep->next;
     }
@@ -262,7 +266,7 @@ expr_list *concat(expr_list *const expl, expr_list *const expr) {
  * Use the indices found to get the unit multiplier mul
  * in mul_tab. For example, mul_tab[8][4] is 9, so GHz is Hzx10^9. 
  * Return the combined measure index as an integer row*256 + mul (or, the same,
- * row<<8 + mul).
+ * mul<<8 + row).
  * If the measurement unit sym is not found in meas_tab, -1 is returned.
  */
 int getmeas(char const *sym) {
@@ -291,13 +295,14 @@ int getmeas(char const *sym) {
 
 void print_list(expr_list *const expr) {
     
-    expr_list *ex = expr;
+    expr_list *ep = expr;
     int mea, mu, mul;
-    while (ex->next) {
-        mea = ex->measure;
+    while (ep) {
+        mea = ep->measure;
         mu = 0x0ff&mea, mul = mea>>8;
-        printf("(%s x 10^%d)^%d\n", measures[mu], mul, ex->power);
-        ex = ex->next;
+        printf("(%s x 10^%d)^%d\n", measures[mu], mul, ep->power);
+        /* printf("pr_list: ep = %p, ep->next = %p\n", ep, ep->next); */
+        ep = ep->next;
     }
 }
 

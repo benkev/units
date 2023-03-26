@@ -1,0 +1,4 @@
+ A*kg*(m^-1*s^-2)^3
+
+cm*((mg^2*us^-3/nA)^-5*K^5/cd/(mole*THz)^3*day)^2*rad*Jy^(7+2*(4-6))
+

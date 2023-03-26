@@ -55,7 +55,7 @@ void print_tree(ast_node *a);
 void print_list(expr_list *const expr);
                 
 /* Reduce an AST */
-expr_list *reduce(ast_node *a);
+expr_list *reduce(ast_node *a, expr_list *head);
 
 /* delete and free an AST */
 void treefree(ast_node *);
