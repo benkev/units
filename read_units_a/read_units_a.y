@@ -19,13 +19,16 @@ int yylex(void);
  * 0: length (meter,    m)
  * 1: mass	 (kilogram, kg)
  * 2: time   (second,	s)
- * 3: electric current	(Ampere, A)
- * 4: thermodynamic temperature	(Kelvin, K)
- * 5: amount of substance (mole, mol)
+ * 3: time   (min, hr, day, mon, yr)
+ * 4: electric current	(Ampere, A)
+ * 5: thermodynamic temperature	(Kelvin, K)
  * 6: luminous intensity (candela, cd)
- * 7: plane angle (radian, rad)
- * 8: plane angle (degree, deg)
- * 9: solid angle (steradian, sr)
+ * 7: amount of substance (mole, mol)
+ * 8: frequency (Hertz, Hz)
+ * 9: plane angle (radian, rad)
+ * 10: plane angle (degree, deg)
+ * 11: solid angle (steradian, sr)
+ * 12: spectral flux density, or spectral irradiance (Jansky, Jy)
  * 
  * Array dim stores integer powers of the units in the measure expression.
  * Array mul stores integer powers of the prefix multipliers of units 
@@ -34,8 +37,9 @@ int yylex(void);
  *
  */
  
-enum measure_index {i_length = 0, i_mass, i_time, i_current, i_temp, i_lumi,
-             i_mole, i_freq, i_ang_rad, i_ang_deg, i_solid_ang, i_Jansky};
+enum measure_index {i_length = 0, i_mass, i_time, i_tday, i_current,
+                    i_temp, i_lumi, i_mole, i_freq, i_ang_rad, i_ang_deg,
+                    i_solid_ang, i_Jansky};
 
 int mea[32];  /* 1: a measure present, 0 - absent */
 int dim[32];  /* powers of the units */
@@ -100,7 +104,12 @@ symex:  measure              { $$ = newmeas($1); }
 ;
 
 measure: T_symbol    { $$ = getmeas($1);
-     printf("sym='%s', meas = %d => %d x 10^%d\n", $1, $$, 0x0ff&$$, $$>>8); }
+                       if ($$ == -1) {
+                           yyerror("no such measurement unit: '%s'", $1);
+                           YYERROR;
+                       }
+                     }
+     /*printf("sym='%s', meas = %d => %d x 10^%d\n", $1, $$, 0x0ff&$$, $$>>8);*/
      /* printf("sym='%s', meas = %d = %d | %d\n", $1, $$, ((umea)$$).imea, */
      /*        ((umea)$$).mul); } */
 ;
@@ -125,7 +134,8 @@ int main(int argc, char **argv) {
 /* #endif */
     
     yyparse();
-    
+
+    printf("Done.\n");
     return 0;
 }
 
