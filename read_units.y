@@ -84,6 +84,8 @@ enum measure_index i_measure;
 explist:   /* empty */
         | explist numex EOL   {
           printf("= %d\n> ", $2);
+          yyerror("no measurement units, just number: %d", $2);
+          printf("\n> ");
         }
         | explist symex EOL   { ast_node *a = $2;
                                 print_tree($2);
