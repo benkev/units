@@ -3,12 +3,13 @@
 
 %{
     
-#include "read_units_a.h"
-#include "read_units_a.tab.h"
+# include "read_units.tab.h"
     
 %}
 
 /* Definition (Substitution) Section */
+
+/* SI_PREFIX    [ \t]*("q"|"r"|"y"|"z"|"a"|"f"|"p"|"n"|"u"|"m"|"c"|"d"|"da"|"h"|"k"|"M"|"G"|"T"|"P"|"E"|"Z"|"Y"|"R"|"Q"|"quecto"|"ronto"|"yocto"|"zepto"|"atto"|"femto"|"pico"|"nano"|"micro"|"milli"|"centi"|"deci"|"deka"|"hecto"|"kilo"|"Mega"|"Giga"|"Tera"|"Peta"|"Exa"|"Zetta"|"Yotta"|"Ronna"|"Quetta") */
 
 SI_PREFIX    [ \t]*("quecto"|"ronto"|"yocto"|"zepto"|"atto"|"femto"|"pico"|"nano"|"micro"|"milli"|"centi"|"deci"|"deka"|"hecto"|"kilo"|"Mega"|"Giga"|"Tera"|"Peta"|"Exa"|"Zetta"|"Yotta"|"Ronna"|"Quetta")
     
@@ -35,8 +36,19 @@ JANSKY	[ \t]*"Jy"
 "(" |
 ")"   { return yytext[0]; }
 [0-9]+	     { yylval.d = atoi(yytext); return T_number; }
+{LENGTH}     { yylval.s = strdup(yytext); return T_length; }
+{MASS}       { yylval.s = strdup(yytext); return T_mass; }
+{TIME}       { yylval.s = strdup(yytext); return T_time; }
+{CURRENT}    { yylval.s = strdup(yytext); return T_current; }
+{TEMP}       { yylval.s = strdup(yytext); return T_temp; }
+{LUMI}       { yylval.s = strdup(yytext); return T_lumi; }
+{MOLE}       { yylval.s = strdup(yytext); return T_mole; }
+{FREQ}       { yylval.s = strdup(yytext); return T_freq; }
+{ANG_RAD}    { yylval.s = strdup(yytext); return T_ang_rad; }
+{ANG_DEG}    { yylval.s = strdup(yytext); return T_ang_deg; }
+{SOLID_ANG}  { yylval.s = strdup(yytext); return T_solid_ang; }
+{JANSKY}     { yylval.s = strdup(yytext); return T_Jansky; }
 {SI_PREFIX}  { yylval.s = strdup(yytext); return T_SI_prefix; }
-[a-zA-Z]+	 { yylval.s = strdup(yytext); return T_symbol; }
 \n      { return EOL; }
 [ \t]   { /* ignore white space */ }
 .	{ printf("Mystery character %c\n", *yytext); }
