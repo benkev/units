@@ -129,15 +129,3 @@ numex:  T_number                 { $$ = $1;         }
 %%
 
 
-int main(int argc, char **argv) {
-    
-/* #ifdef YYDEBUG */
-/*     yydebug = 1; */
-/* #endif */
-    
-    yyparse();
-
-    printf("Done.\n");
-    return 0;
-}
-
