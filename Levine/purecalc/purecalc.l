@@ -5,8 +5,8 @@
 %option header-file="purecalc.lex.h"
 
 %{
-#include "purecalc.tab.h"
 #include "purecalc.h"
+#include "purecalc.tab.h"
 %}
 
 /* float exponent */

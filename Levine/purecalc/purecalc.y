@@ -1,12 +1,17 @@
-/* calculator with AST */
-/* $Header: /home/johnl/flnb/RCS/purecalc.y,v 1.1 2009/04/26 08:56:01 johnl Exp $ */ 
-%define api.pure
+/* Calculator with AST
+ * $Header: /home/johnl/flnb/RCS/purecalc.y, \
+ * v 1.1 2009/04/26 08:56:01 johnl Exp $ 
+ */ 
+%define api.pure full
 %parse-param { struct pcdata *pp }
 
 %{
 #  include <stdio.h>
 #  include <stdlib.h>
-    // #include "purecalc.h"
+/* #  include "purecalc.tab.h" */
+/* #  include "purecalc.lex.h" */
+/* #  include "purecalc.h" */
+/* #define YYLEX_PARAM pp->scaninfo */
 %}
 
 %union {
