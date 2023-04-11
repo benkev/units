@@ -5,6 +5,7 @@
 %option header-file="purecalc.lex.h"
 
 %{
+#define YY_DECL int yylex (YYSTYPE * yylval_param , yyscan_t yyscanner)
 #include "purecalc.h"
 #include "purecalc.tab.h"
 %}

@@ -8,6 +8,7 @@
 %{
 #  include <stdio.h>
 #  include <stdlib.h>
+#define YY_DECL int yylex (YYSTYPE * yylval_param , yyscan_t yyscanner)
 /* #  include "purecalc.tab.h" */
 /* #  include "purecalc.lex.h" */
 /* #  include "purecalc.h" */
