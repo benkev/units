@@ -1,4 +1,7 @@
-    /* Lexer */
+/* 
+ * Lexer
+ */
+
 %{
     #include "nasi.tab.h"
     #include <stdlib.h>
@@ -21,7 +24,6 @@
                     *yylval = true;
                 }
 
-                //yylval = atoi(yytext);
                 return INTEGER;
             }
 
@@ -44,7 +46,9 @@ bool parseExpression(const std::string& inp)
     yylex_init(&myscanner);
     struct yyguts_t * yyg = (struct yyguts_t*)myscanner;
 
-    yy_delete_buffer(YY_CURRENT_BUFFER,myscanner);
+    /*  */
+    // yy_delete_buffer(YY_CURRENT_BUFFER,myscanner);
+    yypop_buffer_state(myscanner);
 
     /*Copy string into new buffer and Switch buffers*/
     yy_scan_string(inp.c_str(), myscanner);

@@ -1,6 +1,13 @@
+/* 
+ * Parser
+ */
+
 %{
     #include <stdio.h>
     #include <string>
+    #include <iostream>
+
+    /* #include <print> */
 
     #define YYSTYPE bool
     typedef void* yyscan_t;
@@ -16,6 +23,7 @@
 
 %token INTEGER
 %left '&' '|'
+%right '!'
 
 %%
 
@@ -25,7 +33,7 @@ program:
         ;
 
 statement:
-        expression                      { printf("%d\n", $1); return $1; }
+expression                      { /* printf("%d\n", $1); */ return $1; }
         ;
 
 expression:
@@ -45,11 +53,13 @@ void yyerror (yyscan_t yyscanner, char const *msg){
 
 int main(void) {
 
-    std::string inp = "1|0\n";
+    std::string inp = "1|(0&1|0)\n";
 
     bool nasi = parseExpression(inp);
-    printf("%s%d\n", "nasi ", nasi);
-    printf("Press ENTER to close. ");
-    getchar();
+    std::cout << inp.substr(0, inp.size()-1) << " == " << nasi
+              << std::endl;
+    /* std::print("{} => {}\n", inp, nasi); */
+    /* printf("Press ENTER to close. "); */
+    /* getchar(); */
 }
 
