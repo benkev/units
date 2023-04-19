@@ -29,3 +29,37 @@
 .	{ printf("Mystery character %c\n", *yytext); }
 %%
 
+
+void parse_expr(const std::string& inp)
+{
+    yyscan_t scanner;
+    
+    yylex_init(&scanner);
+    struct yyguts_t * yyg = (struct yyguts_t*)scanner;
+
+    /*  */
+    // yy_delete_buffer(YY_CURRENT_BUFFER,scanner);
+    yypop_buffer_state(scanner);
+
+    /*Copy string into new buffer and Switch buffers*/
+    yy_scan_string(inp.c_str(), scanner);
+
+    yyparse(scanner);
+    
+    yylex_destroy(scanner);
+    return nasi;
+}
+
+int main(int argc, char **argv) {
+    
+    std::string inp = argv[1];
+
+    parseExpression(inp);
+    
+    std::cout << inp.substr(0, inp.size()-1) << " == " << nasi
+              << std::endl;
+
+    return 0;
+}
+
+ 
