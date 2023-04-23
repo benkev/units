@@ -5,6 +5,7 @@
 
 %{
     
+#include <string.h>
 #include "read_units.h"
 #include "read_units.tab.h"
     
@@ -30,12 +31,13 @@
 %%
 
 
-void parse_expr(const std::string& inp)
+/* void parse_expr(const std::string& inp) */
+void parse_expr(const char inp[])
 {
     yyscan_t scanner;
     
     yylex_init(&scanner);
-    struct yyguts_t * yyg = (struct yyguts_t*)scanner;
+    struct yyguts_t * yyg = (struct yyguts_t *)scanner;
 
     /*  */
     // yy_delete_buffer(YY_CURRENT_BUFFER,scanner);
@@ -47,17 +49,20 @@ void parse_expr(const std::string& inp)
     yyparse(scanner);
     
     yylex_destroy(scanner);
-    return nasi;
+    /* return nasi; */
 }
 
 int main(int argc, char **argv) {
     
-    std::string inp = argv[1];
+    /* std::string inp = argv[1]; */
+    char *inp = argv[1];
 
     parseExpression(inp);
     
-    std::cout << inp.substr(0, inp.size()-1) << " == " << nasi
-              << std::endl;
+    /* std::cout << inp.substr(0, inp.size()-1) << " == " << nasi */
+    /*           << std::endl; */
+
+    printf("\n");
 
     return 0;
 }

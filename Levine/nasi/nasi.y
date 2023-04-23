@@ -33,7 +33,7 @@ program:
         ;
 
 statement:
-expression                      { /* printf("%d\n", $1); */ return $1; }
+        expression                      { /* printf("%d\n", $1); */ return $1; }
         ;
 
 expression:

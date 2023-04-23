@@ -6,7 +6,7 @@
 typedef unsigned char uchar;
 
 /* interface to the lexer */
-extern int yylineno; /* from lexer */
+/* extern int yylineno; /\* from lexer *\/ */
 void yyerror(char *s, ...);
 
 /* Tree node in the Abstract Syntax Tree */
