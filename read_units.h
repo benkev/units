@@ -1,7 +1,8 @@
 /*
- * Declarations for read_units lexer/parser
+ * Declarations for read_units reentrant lexer and parser
  */
-
+#include "read_units.tab.h"
+#include "read_units.lex.h"
 
 typedef unsigned char uchar;
 
@@ -34,6 +35,12 @@ typedef struct expr_list {
   int power;
   struct expr_list *next;
 } expr_list;
+
+/* Per-parse data */
+typedef struct pcdata {
+    yyscan_t scanner;   /* Scanner context */
+    expr_list *el;      /* List of found measures with powers */
+} pcdata;
 
 /* typedef union umea { */
 /*     int mea; */

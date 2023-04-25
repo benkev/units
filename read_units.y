@@ -1,4 +1,6 @@
 /* 
+ * Reentrant, or pure parser
+ * 
  * Parse an expression of measurement units
  */
 
@@ -8,9 +10,6 @@
 #include <math.h>
 #include "read_units.h"
     
-int yylex(void);
- 
-/* int yylex(yyscan_t scanner); */
 
 /*
  * The positions of the measurement unit powers in dim[] and 
@@ -48,6 +47,12 @@ enum measure_index i_measure;
 
 %}
 
+%define api.pure full
+%lex-param {yyscan_t scanner}
+%parse-param {pcdata *pp}  /* Where parser rets list of measures with pwrs */
+
+
+
 /*
  * Parse stack element
  */
@@ -56,6 +61,13 @@ enum measure_index i_measure;
     char  *s;
     int    d;
 }
+
+
+%{
+#include "read_units.lex.h"
+#define YYLEX_PARAM pp->scanner
+%}
+
 
 /* Declare tokens (terminal symbols) */
 %token <d> EOL
@@ -83,10 +95,10 @@ enum measure_index i_measure;
 
 explist:   /* empty */
         | explist numex EOL   {
-          printf("= %d\n> ", $2);
-          yyerror("no measurement units, just number: %d", $2);
-          printf("\n> ");
-        }
+                          printf("= %d\n> ", $2);
+                          yyerror("no measurement units, just number: %d", $2);
+                          printf("\n> ");
+                              }
         | explist symex EOL   { ast_node *a = $2;
                                 print_tree($2);
                                 expr_list *el = reduce($2, 0);

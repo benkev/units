@@ -2,6 +2,8 @@
  * Reentrant lexer for measurement units expressions
  */
 %option noyywrap nodefault reentrant bison-bridge
+ /* Generate lexer header to use in parser */
+%option header-file="read_units.lex.h"  
 
 %{
     
@@ -35,18 +37,19 @@
 void parse_expr(const char inp[])
 {
     yyscan_t scanner;
+    expr_list *el;  /* Parser returns list of found measures with powers */
     
     yylex_init(&scanner);
-    struct yyguts_t * yyg = (struct yyguts_t *)scanner;
+    /* struct yyguts_t * yyg = (struct yyguts_t *)scanner; */
 
     /*  */
     // yy_delete_buffer(YY_CURRENT_BUFFER,scanner);
     yypop_buffer_state(scanner);
 
     /*Copy string into new buffer and Switch buffers*/
-    yy_scan_string(inp.c_str(), scanner);
+    yy_scan_string(inp, scanner);
 
-    yyparse(scanner);
+    yyparse(el);
     
     yylex_destroy(scanner);
     /* return nasi; */
@@ -57,7 +60,7 @@ int main(int argc, char **argv) {
     /* std::string inp = argv[1]; */
     char *inp = argv[1];
 
-    parseExpression(inp);
+    parse_expr(inp);
     
     /* std::cout << inp.substr(0, inp.size()-1) << " == " << nasi */
     /*           << std::endl; */

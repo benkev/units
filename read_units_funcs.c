@@ -54,11 +54,6 @@ char const mul_tab[NMEAS][NMODS] = {
 
 
 
-extern expr_list *globexpr;
-
-int yyparse (void);
-
-
 ast_node *
 newast(int nodetype, ast_node *l, ast_node *r)
 {
@@ -337,21 +332,13 @@ void print_tree(ast_node *a) {
 }
 
 
-void
-yyerror(char *s, ...)
+void yyerror(pcdata *pp, char *s, ...)
 {
   va_list ap;
   va_start(ap, s);
 
-  /* fprintf(stderr, "%d: error: ", yylineno); */
   fprintf(stderr, "Error: ");
   vfprintf(stderr, s, ap);
   fprintf(stderr, "\n");
 }
 
-/* int */
-/* main() */
-/* { */
-/*   printf("> ");  */
-/*   return yyparse(); */
-/* } */
