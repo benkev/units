@@ -1,4 +1,4 @@
-ru:	read_units.c read_units.y read_units.l
+ru:	read_units.y read_units.l
 	bison -dt read_units.y
 	flex -o read_units.lex.c read_units.l
 	gcc -g read_units.c read_units.tab.c read_units.lex.c read_units_funcs.c \
