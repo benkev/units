@@ -10,8 +10,6 @@
     
 int yylex(void);
  
-/* int yylex(yyscan_t scanner); */
-
 /*
  * The positions of the measurement unit powers in dim[] and 
  * multiples or subdivisions in mul[]  are as follows:
@@ -37,14 +35,10 @@ int yylex(void);
  *
  */
  
-enum measure_index {i_length = 0, i_mass, i_time, i_tday, i_current,
-                    i_temp, i_lumi, i_mole, i_freq, i_ang_rad, i_ang_deg,
-                    i_solid_ang, i_Jansky};
+/* enum measure_index {i_length = 0, i_mass, i_time, i_tday, i_current, */
+/*                     i_temp, i_lumi, i_mole, i_freq, i_ang_rad, i_ang_deg, */
+/*                     i_solid_ang, i_Jansky}; */
 
-int mea[32];  /* 1: a measure present, 0 - absent */
-int dim[32];  /* powers of the units */
-int mul[32];  /* powers of the prefix multipliers, like milli, kilo etc. */
-enum measure_index i_measure;
 
 %}
 
@@ -127,17 +121,4 @@ numex:  T_number                 { $$ = $1;         }
         | '(' numex ')'          { $$ = $2;         }
 ;
 %%
-
-
-int main(int argc, char **argv) {
-    
-/* #ifdef YYDEBUG */
-/*     yydebug = 1; */
-/* #endif */
-    
-    yyparse();
-
-    printf("Done.\n");
-    return 0;
-}
 
