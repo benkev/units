@@ -40,7 +40,7 @@ int main(void) {
      */
     buf = yy_scan_string(meas_exp);
 
-    //yyparse();
+    yyparse();
     
     printf("\n");
     

@@ -52,7 +52,6 @@ int yylex(void);
 }
 
 /* Declare tokens (terminal symbols) */
-%token <d> EOL
 %token <d> T_number
 %token <s> T_SI_prefix
 %token <s> T_symbol
@@ -76,19 +75,19 @@ int yylex(void);
 %%
 
 explist:   /* empty */
-        | explist numex EOL   {
-          printf("= %d\n> ", $2);
+        | explist numex YYEOF   {
+          /* printf("= %d\n> ", $2); */
           yyerror("no measurement units, just number: %d", $2);
           printf("\n> ");
         }
-        | explist symex EOL   { ast_node *a = $2;
+        | explist symex YYEOF   { ast_node *a = $2;
                                 print_tree($2);
                                 expr_list *el = reduce($2, 0);
                                 printf("Reduced to list:\n> ");
                                 print_list(el);
                                 printf("\n> ");
         }
-        | explist EOL         { printf("\n> "); } /* blank line */
+        | explist YYEOF         { printf("\n> "); } /* blank line */
 ;
 
 symex:  measure              { $$ = newmeas($1); }

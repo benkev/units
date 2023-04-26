@@ -17,12 +17,11 @@
 "/" |
 "^" |
 "(" |
-")"   { return yytext[0]; }
-[0-9]+	     { yylval.d = atoi(yytext); return T_number; }
-[a-zA-Z]+	 { yylval.s = strdup(yytext); return T_symbol; }
-\n      { return EOL; }
-[ \t]   { /* ignore white space */ }
-.	{ printf("Mystery character %c\n", *yytext); }
+")"        { return yytext[0]; }
+[0-9]+	   { yylval.d = atoi(yytext); return T_number; }
+[a-zA-Z]+  { yylval.s = strdup(yytext); return T_symbol; }
+[ \t]      { /* ignore white space */ }
+.	       { printf("Mystery character %c\n", *yytext); }
 %%
 
 
