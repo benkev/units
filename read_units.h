@@ -5,10 +5,6 @@
 
 typedef unsigned char uchar;
 
-/* interface to the lexer */
-extern int yylineno; /* from lexer */
-void yyerror(char *s, ...);
-
 /* Tree node in the Abstract Syntax Tree */
 typedef struct ast_node {
   int nodetype;
@@ -59,4 +55,8 @@ expr_list *reduce(ast_node *a, expr_list *head);
 
 /* delete and free an AST */
 void treefree(ast_node *);
+
+/* interface to the lexer */
+extern int yylineno; /* from lexer */
+void yyerror(expr_list *el, char *s, ...);
 

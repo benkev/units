@@ -1,7 +1,6 @@
 /* 
  * Parse an expression of measurement units
  */
-
 %{
     
 #include <stdio.h>
@@ -42,6 +41,8 @@ int yylex(void);
 
 %}
 
+%parse-param { expr_list *el }
+
 /*
  * Parse stack element
  */
@@ -74,22 +75,20 @@ int yylex(void);
 /* Grammar */
 %%
 
-/* root:   YYEOF  /\* empty *\/          { yyerror("empty string."); } */
-/*         |  exprsn YYEOF */
+exprsn:  numex YYEOF {
+                      yyerror(el, "no measurement units, just number: %d", $1);
+                      YYERROR;
 
-exprsn:  numex YYEOF   {
-          /* printf("= %d\n> ", $2); */
-          yyerror("no measurement units, just number: %d", $1);
-          printf("\n> ");
-        }
+                     }
         | symex YYEOF   { ast_node *a = $1;
-                                print_tree($1);
-                                expr_list *el = reduce($1, 0);
-                                printf("Reduced to list:\n> ");
-                                print_list(el);
-                                printf("\n> ");
+                          print_tree($1);
+                          el = reduce($1, 0); /* List ptr: yylex(expr_list*) */
+                          /* expr_list *el = reduce($1, 0); */
+                          /* printf("Reduced to list:\n "); */
+                          /* print_list(el); */
+                          /* printf("\nDone. "); */
         }
-        | YYEOF         { yyerror("empty string."); }
+        | YYEOF         { yyerror(el, "empty string."); YYERROR; }
 ;
 
 symex:  measure              { $$ = newmeas($1); }
@@ -102,13 +101,10 @@ symex:  measure              { $$ = newmeas($1); }
 
 measure: T_symbol    { $$ = getmeas($1);
                        if ($$ == -1) {
-                           yyerror("no such measurement unit: '%s'", $1);
+                           yyerror(el, "no such measurement unit: '%s'", $1);
                            YYERROR;
                        }
                      }
-     /*printf("sym='%s', meas = %d => %d x 10^%d\n", $1, $$, 0x0ff&$$, $$>>8);*/
-     /* printf("sym='%s', meas = %d = %d | %d\n", $1, $$, ((umea)$$).imea, */
-     /*        ((umea)$$).mul); } */
 ;
 
 numex:  T_number                 { $$ = $1;         }

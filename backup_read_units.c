@@ -32,6 +32,8 @@ int main(void) {
         case '^': case '(': case ')':
             printf("'%c' ", tok); break;
         }
+    printf("\n\n");
+    
 
     yy_delete_buffer(buf);
 
@@ -40,8 +42,13 @@ int main(void) {
      */
     buf = yy_scan_string(meas_exp);
 
-    yyparse();
+    expr_list *el; /* Pointer to the list of measures with their exponents */
     
+    yyparse(el);
+
+    printf("The list of measures with their exponents found in expression:\n");
+    printf("\n");
+    print_list(el);
     printf("\n");
     
     yy_delete_buffer(buf);
