@@ -33,10 +33,6 @@ int main(void) {
             printf("'%c' ", tok); break;
         }
 
-    printf("\n\n");
-    
-    printf("Parsing:\n");
-    
     yy_delete_buffer(buf);
 
     /*

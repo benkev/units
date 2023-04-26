@@ -74,20 +74,22 @@ int yylex(void);
 /* Grammar */
 %%
 
-explist:   /* empty */
-        | explist numex YYEOF   {
+/* root:   YYEOF  /\* empty *\/          { yyerror("empty string."); } */
+/*         |  exprsn YYEOF */
+
+exprsn:  numex YYEOF   {
           /* printf("= %d\n> ", $2); */
-          yyerror("no measurement units, just number: %d", $2);
+          yyerror("no measurement units, just number: %d", $1);
           printf("\n> ");
         }
-        | explist symex YYEOF   { ast_node *a = $2;
-                                print_tree($2);
-                                expr_list *el = reduce($2, 0);
+        | symex YYEOF   { ast_node *a = $1;
+                                print_tree($1);
+                                expr_list *el = reduce($1, 0);
                                 printf("Reduced to list:\n> ");
                                 print_list(el);
                                 printf("\n> ");
         }
-        | explist YYEOF         { printf("\n> "); } /* blank line */
+        | YYEOF         { yyerror("empty string."); }
 ;
 
 symex:  measure              { $$ = newmeas($1); }
