@@ -1,0 +1,26 @@
+Please, write for me a lexer (or scanner) in the C language :
+
+int yylex(const char str[], char *pchar, YYSTYPE *yylvalp);
+
+where
+union YYSTYPE {
+    char  *s;
+    int    d;
+};
+typedef union YYSTYPE YYSTYPE;
+
+
+str here is a zero-terminated character string with some algebraic expression.
+pchar points at the next token to be identified in str.
+Each time yylex() is called, the scanner picks up where it left off. 
+yylex() should return an integer token.
+Arithmetic operators like +, -, *, /, ^ and (, )
+are returned as their char values and also stored at the address yylvalp.
+A numerical substring returns T_number token, and the substring's int value is
+stored at yylvalp.
+A substring with alpabetic chars (without '_') returns T_symbol. The substring
+itself is copied to a newly allocated string at the address yylvalp.
+
+#define T_number  259
+#define T_symbol  261
+
