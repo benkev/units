@@ -38,10 +38,9 @@ int yylex(void);
 /*                     i_temp, i_lumi, i_mole, i_freq, i_ang_rad, i_ang_deg, */
 /*                     i_solid_ang, i_Jansky}; */
 
-
 %}
 
-%parse-param { expr_list *el }
+%parse-param { expr_list *explst }
 
 /*
  * Parse stack element
@@ -76,19 +75,22 @@ int yylex(void);
 %%
 
 exprsn:  numex YYEOF {
-                      yyerror(el, "no measurement units, just number: %d", $1);
+                      yyerror(explst, "no measurement units, just number: %d", $1);
                       YYERROR;
-
                      }
         | symex YYEOF   { ast_node *a = $1;
                           print_tree($1);
-                          el = reduce($1, 0); /* List ptr: yylex(expr_list*) */
+                          explst = reduce($1, 0); /* List ptr: yylex(expr_list*) */
                           /* expr_list *el = reduce($1, 0); */
-                          /* printf("Reduced to list:\n "); */
-                          /* print_list(el); */
-                          /* printf("\nDone. "); */
+                          printf("Reduced to list:\n ");
+                          expr_list *el1 = explst;
+                          print_list(explst);
+                          if (explst == el1) printf("el == el1\n");
+                          if (explst != el1) printf("el != el1\n");
+                          printf("el=%p, el1=%p\n", explst, el1);
+                          printf("\nDone. ");
         }
-        | YYEOF         { yyerror(el, "empty string."); YYERROR; }
+        | YYEOF         { yyerror(explst, "empty string."); YYERROR; }
 ;
 
 symex:  measure              { $$ = newmeas($1); }
@@ -101,7 +103,7 @@ symex:  measure              { $$ = newmeas($1); }
 
 measure: T_symbol    { $$ = getmeas($1);
                        if ($$ == -1) {
-                           yyerror(el, "no such measurement unit: '%s'", $1);
+                           yyerror(explst, "no such measurement unit: '%s'", $1);
                            YYERROR;
                        }
                      }
