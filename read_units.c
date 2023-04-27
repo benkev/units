@@ -34,12 +34,12 @@ int main(void) {
     while(tok = yylex())
         switch (tok) {
         case T_symbol:
-            printf("%s ", yylval.s); break;
+            printf("'%s' ", yylval.s); break;
         case T_number:
-            printf("%d ", yylval.d); break;
+            printf("'%d' ", yylval.d); break;
         case '+': case '-': case '*': case '/':
         case '^': case '(': case ')':
-            printf("'%c' ", tok); break;
+            printf("%c ", tok); break;
         }
     printf("\n\n====================================\n\n");
     printf("Parsing this expression as AST tree:\n\n");
@@ -98,9 +98,16 @@ int main(void) {
     meas_pow mpow;
     explst_to_dims(el, &mpow);
 
+    /* Print source and reduced expressions */
+    printf("Source:\n \"%s\"\n\n", meas_exp);
+    printf("Reduced to:\n");
     for (mu=0; mu<NMEAS; mu++) {
-        if (mpow.mea[mu]) printf("%s^%d ", meas_tab[mu], mpow.dim[mu]);
+        if (mpow.mea[mu]) {
+            printf("%s^%d", meas_tab[mu], mpow.dim[mu]);
+            if (mu < NMEAS-1) printf(" * ");
+            else printf("\n");
+        }
     }
-  
+    printf("\n");
     return 0;
 }
