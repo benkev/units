@@ -12,6 +12,8 @@ int main(void) {
         "(mole*THz)^3*day)^2*rad*Jy^(7+2*(4-6))";
     
     /* char const meas_exp[] = " A*kg*(m^-1*s^-2)^3"; */
+
+    /* char const meas_exp[] = " A * kg *(m^-1*s^-2)^3  "; */
         
     YY_BUFFER_STATE buf;
 
@@ -46,11 +48,23 @@ int main(void) {
 
     /* 
      * Pointer to the list (actually, itself a pointer to the head of the list
-     * of measures with their exponents 
+     * of measures with their exponents
+     * 
      */
     expr_list *el; 
-    
-    yyparse(&el);
+
+    /*
+     * The value returned by yyparse is 0 if parsing was successful 
+     *    (return is due to end-of-input).
+     * The value is 1 if parsing failed because of invalid input, 
+     *    i.e., input that contains a syntax error or that causes 
+     *    YYABORT to be invoked.
+     * The value is 2 if parsing failed due to memory exhaustion.
+     *
+     */
+
+    int perr;
+    if (perr = yyparse(&el)) return perr;  
     
     printf("\n");
     printf("The list of measures with their exponents found in expression:\n");

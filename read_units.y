@@ -74,14 +74,14 @@ int yylex(void);
 /* Grammar */
 %%
 
-exprsn:  numex YYEOF {
-                      yyerror(explst, "no measurement units, just number: %d", $1);
-                      YYERROR;
-                     }
+exprsn:  numex YYEOF
+               {
+                 yyerror(explst, "no measurement units, just number: %d", $1);
+                 YYERROR;
+               }
         | symex YYEOF   { ast_node *a = $1;
                           print_tree($1);
-                          *explst = reduce($1, 0); /* List ptr: yylex(expr_list*) */
-                          /* expr_list *el = reduce($1, 0); */
+                          *explst = reduce($1, 0);
                           printf("Reduced to list:\n ");
                           expr_list *el1 = *explst;
                           print_list(*explst);
@@ -103,8 +103,8 @@ symex:  measure              { $$ = newmeas($1); }
 
 measure: T_symbol    { $$ = getmeas($1);
                        if ($$ == -1) {
-                           yyerror(explst, "no such measurement unit: '%s'", $1);
-                           YYERROR;
+                         yyerror(explst, "no such measurement unit: '%s'", $1);
+                         YYERROR;
                        }
                      }
 ;

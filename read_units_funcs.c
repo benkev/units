@@ -12,47 +12,46 @@ expr_list *explst;
 /*
  * Table of measurement units
  */
-#define NMEAS 13
-#define NMODS 13
+#define NMEAS 12
+
+char const *const meas_tab[NMEAS] = \
+    {"m", "kg", "s", "A", "K", "cd", "mol", "Hz", "rad", "deg", "sr", "Jy"};
 
 
-char const *const measures[NMEAS] = {"m", "g", "s", "day", "A", "K", "cd", \
-    "mole", "Hz", "rad", "deg", "sr", "Jy"};
+/* char const *const meas_tab[NMEAS][NMODS] = { */
+/*     {"pm","nm","um","mm","cm","dm","m","dam","hm","km","Mm","Gm",0}, */
+/*     {"pg","ng","ug","mg","cg","dg","g","kg","T","kT","MT","GT",0}, */
+/*     {"fs","ps","ns","us","usec","ms","msec","s","sec",0}, */
+/*     {"min","hr","day","mon","yr",0}, */
+/*     {"fA","pA","nA","uA","mA","A","kA","MA","MegA",0,0,0,0}, */
+/*     {"K",0,0,0,0,0,0,0,0,0,0,0,0}, */
+/*     {"cd",0,0,0,0,0,0,0,0,0,0,0,0}, */
+/*     {"mol","mole",0,0,0,0,0,0,0,0,0,0,0}, */
+/*     {"mHz","Hz","kHz","MHz","GHz","THz",0,0,0,0,0,0,0}, */
+/*     {"rad",0,0,0,0,0,0,0,0,0,0,0,0}, */
+/*     {"\"","''","'","deg",0,0,0,0,0,0,0,0,0}, */
+/*     {"sr",0,0,0,0,0,0,0,0,0,0,0,0}, */
+/*     {"Jy",0,0,0,0,0,0,0,0,0,0,0,0}, */
+/* }; */
 
-char const *const meas_tab[NMEAS][NMODS] = {
-    {"pm","nm","um","mm","cm","dm","m","dam","hm","km","Mm","Gm",0},
-    {"pg","ng","ug","mg","cg","dg","g","kg","T","kT","MT","GT",0},
-    {"fs","ps","ns","us","usec","ms","msec","s","sec",0},
-    {"min","hr","day","mon","yr",0},
-    {"fA","pA","nA","uA","mA","A","kA","MA","MegA",0,0,0,0},
-    {"K",0,0,0,0,0,0,0,0,0,0,0,0},
-    {"cd",0,0,0,0,0,0,0,0,0,0,0,0},
-    {"mol","mole",0,0,0,0,0,0,0,0,0,0,0},
-    {"mHz","Hz","kHz","MHz","GHz","THz",0,0,0,0,0,0,0},
-    {"rad",0,0,0,0,0,0,0,0,0,0,0,0},
-    {"\"","''","'","deg",0,0,0,0,0,0,0,0,0},
-    {"sr",0,0,0,0,0,0,0,0,0,0,0,0},
-    {"Jy",0,0,0,0,0,0,0,0,0,0,0,0},
-};
-
-/*
- * Table of multipliers contains decimal powers, like -3 for "milli" etc.
- */
-char const mul_tab[NMEAS][NMODS] = {
-    {-12, -9, -6, -3, -2, -1,  0,  1,  2,  3,  6,  9,127},
-    {-12, -9, -6, -3, -2, -1,  0,  3,  6,  9, 12, 15,127},
-    {-15,-12, -9, -6, -6, -3, -3,  0,  0,127,127,127,127},
-    {  0,  0,  0,  0,  0,127,127,127,127,127,127,127,127},
-    {-15,-12, -9, -6, -3,  0,  3,  6,  6,127,127,127,127},
-    {  0,127,127,127,127,127,127,127,127,127,127,127,127},
-    {  0,127,127,127,127,127,127,127,127,127,127,127,127},
-    {  0,  0,127,127,127,127,127,127,127,127,127,127,127},
-    { -3,  0,  3,  6,  9, 12,127,127,127,127,127,127,127},
-    {  0,127,127,127,127,127,127,127,127,127,127,127,127},
-    {  0,  0,  0,  0,127,127,127,127,127,127,127,127,127},
-    {  0,127,127,127,127,127,127,127,127,127,127,127,127},
-    {  0,127,127,127,127,127,127,127,127,127,127,127,127},
-};
+/* /\* */
+/*  * Table of multipliers contains decimal powers, like -3 for "milli" etc. */
+/*  *\/ */
+/* char const mul_tab[NMEAS][NMODS] = { */
+/*     {-12, -9, -6, -3, -2, -1,  0,  1,  2,  3,  6,  9,127}, */
+/*     {-12, -9, -6, -3, -2, -1,  0,  3,  6,  9, 12, 15,127}, */
+/*     {-15,-12, -9, -6, -6, -3, -3,  0,  0,127,127,127,127}, */
+/*     {  0,  0,  0,  0,  0,127,127,127,127,127,127,127,127}, */
+/*     {-15,-12, -9, -6, -3,  0,  3,  6,  6,127,127,127,127}, */
+/*     {  0,127,127,127,127,127,127,127,127,127,127,127,127}, */
+/*     {  0,127,127,127,127,127,127,127,127,127,127,127,127}, */
+/*     {  0,  0,127,127,127,127,127,127,127,127,127,127,127}, */
+/*     { -3,  0,  3,  6,  9, 12,127,127,127,127,127,127,127}, */
+/*     {  0,127,127,127,127,127,127,127,127,127,127,127,127}, */
+/*     {  0,  0,  0,  0,127,127,127,127,127,127,127,127,127}, */
+/*     {  0,127,127,127,127,127,127,127,127,127,127,127,127}, */
+/*     {  0,127,127,127,127,127,127,127,127,127,127,127,127}, */
+/* }; */
 
 
 
@@ -262,31 +261,21 @@ expr_list *concat(expr_list *const expl, expr_list *const expr) {
 
 /*
  * Lookup the table of measurement units meas_tab to find the measure index
- * from its row and column locations. 
- * For example, 'GHz' is at [8,4]. The row, 8, denotes 'Frequency in Hz'. 
- * Use the indices found to get the unit multiplier mul
- * in mul_tab. For example, mul_tab[8][4] is 9, so GHz is Hzx10^9. 
- * Return the combined measure index as an integer row*256 + mul (or, the same,
- * mul<<8 + row).
+ * from its locations. 
+ * For example, 'Hz' is at [8], so 8 denotes 'Frequency in Hz'. 
+ * Returns the measure index found.
  * If the measurement unit sym is not found in meas_tab, -1 is returned.
  */
 int getmeas(char const *sym) {
 
-    int i, j, streq;
+    int i, streq;
     for (i=0; i<NMEAS; i++) {
-        j = 0;
-        while (meas_tab[i][j] != 0) {
-            streq = strcmp(meas_tab[i][j], sym);
-            if (streq == 0) break;
-            j++;
-        }
+        streq = strcmp(meas_tab[i], sym);
         if (streq == 0) break;
     }
     if (streq == 0) {
-        /* printf("\n'%s': i=%d, j=%d, mul=%d, ret=%d\n", sym, i, j, */
-        /*       (int) mul_tab[i][j], ((int)mul_tab[i][j])<<8 | (int)i); */
-        
-        return ((int)mul_tab[i][j])<<8 | i;
+        printf("\n'%s': i=%d\n", sym, i);
+        return  i;
     }
     else
         return -1;
@@ -298,10 +287,8 @@ void print_list(expr_list *const expr) {
     expr_list *ep = expr;
     int mea, mu, mul;
     while (ep) {
-        mea = ep->measure;
-        mu = 0x0ff&mea, mul = mea>>8;
-        printf("(%s x 10^%d)^%d\n", measures[mu], mul, ep->power);
-        /* printf("pr_list: ep = %p, ep->next = %p\n", ep, ep->next); */
+        mu = ep->measure;
+        printf("(%s x 10^%d)^%d\n", meas_tab[mu], ep->power);
         ep = ep->next;
     }
 }
@@ -327,9 +314,8 @@ void print_tree(ast_node *a) {
     }
     case 'M': {
         meas_leaf *ml = (meas_leaf *)a;
-        int mea = ml->measure;
-        int mu = 0x0ff&mea, mul = mea>>8;
-        printf("'%s x 10^%d'\n", measures[mu], mul);
+        int mu = ml->measure;
+        printf("'%s'\n", meas_tab[mu]);
         break;
     }
     default: printf("internal error: free bad node %c\n", a->nodetype);
