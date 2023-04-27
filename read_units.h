@@ -60,7 +60,7 @@ expr_list *reduce(ast_node *a, expr_list *head);
 void treefree(ast_node *);
 
 /* Convert measurement expression from list into array of measure powers */
-int explst_to_dims(expr_list *explst, meas_pow *mpow)
+void explst_to_dims(expr_list *explst, meas_pow *mpow);
 
 /* interface to the lexer */
 extern int yylineno; /* from lexer */

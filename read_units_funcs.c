@@ -342,11 +342,11 @@ yyerror(expr_list **explst, char *s, ...)
 void explst_to_dims(expr_list *explst, meas_pow *mpow) {
 
     expr_list *ep = explst;
-    int i, mu, pw;
+    int mu, pw;
 
-    for (i=0; i<NMEAS; i++) {
-        mpow->dim[i] = 0;
-        mpow->mea[i] = 0;  /* Assume no measures (empty expression) */
+    for (mu=0; mu<NMEAS; mu++) {
+        mpow->dim[mu] = 0;
+        mpow->mea[mu] = 0;  /* Assume no measures (empty expression) */
     }
 
     while (ep) {
