@@ -2,8 +2,13 @@
  * Declarations for read_units lexer/parser
  */
 
+#define NMEAS 12
 
 typedef unsigned char uchar;
+
+enum measure_index {i_length = 0, i_mass, i_time, i_current,
+                    i_temp, i_lumi, i_mole, i_freq, i_ang_rad, i_ang_deg,
+                    i_solid_ang, i_Jansky};
 
 /* Tree node in the Abstract Syntax Tree */
 typedef struct ast_node {
@@ -31,13 +36,11 @@ typedef struct expr_list {
   struct expr_list *next;
 } expr_list;
 
-/* typedef union umea { */
-/*     int mea; */
-/*     struct { */
-/*         uchar mul; */
-/*         char imea; */
-/*     }; */
-/* } umea; */
+/* Positional representation of measure expression */
+typedef struct meas_pow {
+    int dim[NMEAS];  /* powers of the units */
+    int mea[NMEAS];  /* 1: a measure present, 0 - absent */
+} meas_pow;
 
 /* build an AST */
 ast_node *newast(int nodetype, ast_node *l, ast_node *r);
@@ -55,6 +58,9 @@ expr_list *reduce(ast_node *a, expr_list *head);
 
 /* delete and free an AST */
 void treefree(ast_node *);
+
+/* Convert measurement expression from list into array of measure powers */
+int explst_to_dims(expr_list *explst, meas_pow *mpow)
 
 /* interface to the lexer */
 extern int yylineno; /* from lexer */

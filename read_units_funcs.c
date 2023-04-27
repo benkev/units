@@ -12,8 +12,6 @@ expr_list *explst;
 /*
  * Table of measurement units
  */
-#define NMEAS 12
-
 char const *const meas_tab[NMEAS] = \
     {"m", "kg", "s", "A", "K", "cd", "mol", "Hz", "rad", "deg", "sr", "Jy"};
 
@@ -336,3 +334,25 @@ yyerror(expr_list **explst, char *s, ...)
   fprintf(stderr, "\n");
 }
 
+
+/*
+ * Convert measurement expression from list form into array of measure powers
+ *
+ */
+void explst_to_dims(expr_list *explst, meas_pow *mpow) {
+
+    expr_list *ep = explst;
+    int i, mu, pw;
+
+    for (i=0; i<NMEAS; i++) {
+        mpow->dim[i] = 0;
+        mpow->mea[i] = 0;  /* Assume no measures (empty expression) */
+    }
+
+    while (ep) {
+        mu = ep->measure; /* Position in the array of measure powers */
+        pw = ep->power;
+        mpow->dim[mu] += pw;
+        mpow->mea[mu] = 1;
+        ep = ep->next;
+}

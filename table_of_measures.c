@@ -49,6 +49,14 @@ char const mul_tab[NMEAS][NMODS] = {
     {  0,127,127,127,127,127,127,127,127,127,127,127,127},
 };
 
+enum measure_index {i_length = 0, i_mass, i_time, i_tday, i_current,
+                    i_temp, i_lumi, i_mole, i_freq, i_ang_rad, i_ang_deg,
+                    i_solid_ang, i_Jansky};
+
+int mea[32];  /* 1: a measure present, 0 - absent */
+int dim[32];  /* powers of the units */
+int mul[32];  /* powers of the prefix multipliers, like milli, kilo etc. */
+enum measure_index i_measure;
 
 
 int main(int argc, char *argv[]) {
