@@ -355,4 +355,5 @@ void explst_to_dims(expr_list *explst, meas_pow *mpow) {
         mpow->dim[mu] += pw;
         mpow->mea[mu] = 1;
         ep = ep->next;
+    }
 }

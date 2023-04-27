@@ -64,7 +64,7 @@ int main(void) {
      */
 
     int perr;
-    if (perr = yyparse(&el)) return perr;  
+    if (perr = yyparse(&el)) return perr;  /* ======== ERROR ======== >>> */
     
     printf("\n");
     printf("The list of measures with their exponents found in expression:\n");
@@ -82,6 +82,19 @@ int main(void) {
     printf("\n");
     
     yy_delete_buffer(buf);
+
+
+    /*
+     * Convert measurement expression from list form 
+     * into array of measure powers
+     */
+    int mu;
+    meas_pow mpow;
+    explst_to_dims(el, &mpow);
+
+    for (mu=0; mu<NMEAS; mu++) {
+        if (mpow.mea[mu]) printf("%s^%d ", meas_tab[mu], mpow.dim[mu]);
+    }
   
     return 0;
 }
