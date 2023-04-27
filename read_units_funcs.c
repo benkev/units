@@ -12,7 +12,7 @@ expr_list *explst;
 /*
  * Table of measurement units
  */
-char const *const meas_tab[NMEAS] = \
+extern char const *const meas_tab[NMEAS] = \
     {"m", "kg", "s", "A", "K", "cd", "mol", "Hz", "rad", "deg", "sr", "Jy"};
 
 
