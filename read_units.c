@@ -8,8 +8,8 @@
 
 int main(void) {
 
-    char const meas_exp[] = "cm*((mg^2*us^-3/nA)^-5*K^5/cd/" \
-        "(mole*THz)^3*day)^2*rad*Jy^(7+2*(4-6))";
+    char const meas_exp[] = "m*((kg^2*s^-3/A)^-5*K^5/cd/" \
+        "(mol*Hz)^3*s)^2*rad*Jy^(7+2*(4-6))";
     
     /* char const meas_exp[] = " A*kg*(m^-1*s^-2)^3"; */
 

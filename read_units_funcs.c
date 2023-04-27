@@ -285,10 +285,10 @@ int getmeas(char const *sym) {
 void print_list(expr_list *const expr) {
     
     expr_list *ep = expr;
-    int mea, mu, mul;
+    int mu;
     while (ep) {
         mu = ep->measure;
-        printf("(%s x 10^%d)^%d\n", meas_tab[mu], ep->power);
+        printf("%s^%d\n", meas_tab[mu], ep->power);
         ep = ep->next;
     }
 }
