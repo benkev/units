@@ -9,7 +9,8 @@ typedef unsigned char uchar;
 enum measure_index {i_length = 0, i_mass, i_time, i_current,
                     i_temp, i_lumi, i_mole, i_freq, i_ang_rad, i_ang_deg,
                     i_solid_ang, i_Jansky};
-extern meas_tab;
+
+extern char const *const meas_tab[NMEAS]; /* Table of measurement units */
 
 /* Tree node in the Abstract Syntax Tree */
 typedef struct ast_node {
