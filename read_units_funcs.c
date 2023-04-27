@@ -7,7 +7,7 @@
 #  include <string.h>
 #  include "read_units.h"
 
-expr_list *el;
+expr_list *explst;
 
 /*
  * Table of measurement units
@@ -56,9 +56,8 @@ char const mul_tab[NMEAS][NMODS] = {
 
 
 
-extern expr_list *globexpr;
 
-int yyparse (void);
+/* int yyparse (void); */
 
 
 ast_node *
@@ -67,7 +66,7 @@ newast(int nodetype, ast_node *l, ast_node *r)
   ast_node *a = malloc(sizeof(ast_node));
   
   if(!a) {
-    yyerror(el, "out of space");
+    yyerror(&explst, "out of space");
     exit(0);
   }
   a->nodetype = nodetype;
@@ -83,7 +82,7 @@ newnum(int d)
   num_leaf *a = malloc(sizeof(num_leaf));
   
   if(!a) {
-    yyerror(el, "out of space");
+    yyerror(&explst, "out of space");
     exit(0);
   }
   a->nodetype = 'K';
@@ -98,7 +97,7 @@ newmeas(int measure)
   meas_leaf *a = malloc(sizeof(meas_leaf));
   
   if(!a) {
-    yyerror(el, "out of space");
+    yyerror(&explst, "out of space");
     exit(0);
   }
   a->nodetype = 'M';
@@ -113,7 +112,7 @@ newexpr(int measure, int power, expr_list *next)
   expr_list *ep = malloc(sizeof(expr_list));
   
   if(!ep) {
-    yyerror(el, "out of space");
+    yyerror(&explst, "out of space");
     exit(0);
   }
 
@@ -340,7 +339,7 @@ void print_tree(ast_node *a) {
 
 
 void
-yyerror(expr_list *el, char *s, ...)
+yyerror(expr_list **explst, char *s, ...)
 {
   va_list ap;
   va_start(ap, s);

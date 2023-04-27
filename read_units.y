@@ -40,7 +40,7 @@ int yylex(void);
 
 %}
 
-%parse-param { expr_list *explst }
+%parse-param { expr_list **explst }
 
 /*
  * Parse stack element
@@ -80,14 +80,14 @@ exprsn:  numex YYEOF {
                      }
         | symex YYEOF   { ast_node *a = $1;
                           print_tree($1);
-                          explst = reduce($1, 0); /* List ptr: yylex(expr_list*) */
+                          *explst = reduce($1, 0); /* List ptr: yylex(expr_list*) */
                           /* expr_list *el = reduce($1, 0); */
                           printf("Reduced to list:\n ");
-                          expr_list *el1 = explst;
-                          print_list(explst);
-                          if (explst == el1) printf("el == el1\n");
-                          if (explst != el1) printf("el != el1\n");
-                          printf("el=%p, el1=%p\n", explst, el1);
+                          expr_list *el1 = *explst;
+                          print_list(*explst);
+                          if (*explst == el1) printf("el == el1\n");
+                          if (*explst != el1) printf("el != el1\n");
+                          printf("*el=%p, el1=%p\n", *explst, el1);
                           printf("\nDone. ");
         }
         | YYEOF         { yyerror(explst, "empty string."); YYERROR; }

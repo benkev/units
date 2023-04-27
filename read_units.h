@@ -58,5 +58,5 @@ void treefree(ast_node *);
 
 /* interface to the lexer */
 extern int yylineno; /* from lexer */
-void yyerror(expr_list *el, char *s, ...);
+void yyerror(expr_list **el, char *s, ...);
 

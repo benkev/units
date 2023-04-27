@@ -44,9 +44,13 @@ int main(void) {
      */
     buf = yy_scan_string(meas_exp);
 
-    expr_list *el; /* Pointer to the list of measures with their exponents */
+    /* 
+     * Pointer to the list (actually, itself a pointer to the head of the list
+     * of measures with their exponents 
+     */
+    expr_list *el; 
     
-    yyparse(el);
+    yyparse(&el);
     
     printf("\n");
     printf("The list of measures with their exponents found in expression:\n");
