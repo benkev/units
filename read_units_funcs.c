@@ -281,8 +281,7 @@ void print_tree(ast_node *a) {
 }
 
 
-void
-yyerror(expr_list **explst, char *s, ...)
+void yyerror(expr_list **explst, const char *s, ...)
 {
   va_list ap;
   va_start(ap, s);
@@ -296,23 +295,20 @@ yyerror(expr_list **explst, char *s, ...)
 
 /*
  * Convert measurement expression from list form into array of measure powers
- *
  */
-void explst_to_dims(expr_list *explst, meas_pow *mpow) {
+void explst_to_arr(expr_list *explst, meas_pow *mpow) {
 
     expr_list *ep = explst;
     int mu, pw;
 
     for (mu=0; mu<NMEAS; mu++) {
-        mpow->dim[mu] = 0;
-        mpow->mea[mu] = 0;  /* Assume no measures (empty expression) */
+        mpow->exp[mu] = 0;
     }
 
     while (ep) {
         mu = ep->measure; /* Position in the array of measure powers */
         pw = ep->power;
-        mpow->dim[mu] += pw;
-        mpow->mea[mu] = 1;
+        mpow->exp[mu] += pw;
         ep = ep->next;
     }
 }

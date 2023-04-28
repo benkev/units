@@ -14,18 +14,18 @@
 
 int main(void) {
 
-    char const meas_exp[] = "m*((kg^2*s^-3/A)^-5*K^5/cd/" \
+    char const meas_expr[] = "m*((kg^2*s^-3/A)^-5*K^5/cd/" \
         "(mol*Hz)^3*s)^2*rad*Jy^(7+2*(4-6))";
     
-    /* char const meas_exp[] = " A*kg*(m^-1*s^-2)^3"; */
+    /* char const meas_expr[] = " A*kg*(m^-1*s^-2)^3"; */
 
-    /* char const meas_exp[] = " A * kg *(m^-1*s^-2)^3  "; */
+    /* char const meas_expr[] = " A * kg *(m^-1*s^-2)^3  "; */
         
     YY_BUFFER_STATE buf;
 
-    buf = yy_scan_string(meas_exp);
+    buf = yy_scan_string(meas_expr);
 
-    printf("Measurement expression:\n \"%s\"\n\n", meas_exp);
+    printf("Measurement expression:\n \"%s\"\n\n", meas_expr);
 
     int tok = 0;
 
@@ -50,7 +50,7 @@ int main(void) {
     /*
      * Parse
      */
-    buf = yy_scan_string(meas_exp);
+    buf = yy_scan_string(meas_expr);
 
     /* 
      * Pointer to the list (actually, itself a pointer to the head of the list
@@ -96,14 +96,14 @@ int main(void) {
      */
     int mu;
     meas_pow mpow;
-    explst_to_dims(el, &mpow);
+    explst_to_arr(el, &mpow);
 
     /* Print source and reduced expressions */
-    printf("Source:\n \"%s\"\n\n", meas_exp);
+    printf("Source:\n \"%s\"\n\n", meas_expr);
     printf("Reduced to:\n");
     for (mu=0; mu<NMEAS; mu++) {
-        if (mpow.mea[mu]) {
-            printf("%s^%d", meas_tab[mu], mpow.dim[mu]);
+        if (mpow.exp[mu]) {
+            printf("%s^%d", meas_tab[mu], mpow.exp[mu]);
             if (mu < NMEAS-1) printf(" * ");
             else printf("\n");
         }
